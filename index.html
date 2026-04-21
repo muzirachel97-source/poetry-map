@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>诗词地图</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,21 +15,40 @@
 
         body {
             font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             background-color: #f5f0e8;
             color: #333;
         }
 
-        h1 {
-            font-size: 2rem;
-            color: #5a3e2b;
+        #header {
+            text-align: center;
+            padding: 16px;
+            background-color: #5a3e2b;
+            color: #f5f0e8;
+        }
+
+        #header h1 {
+            font-size: 1.5rem;
+        }
+
+        #map {
+            width: 100%;
+            height: calc(100vh - 60px);
         }
     </style>
 </head>
 <body>
-    <h1>诗词地图</h1>
+    <div id="header">
+        <h1>诗词地图</h1>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        var map = L.map('map').setView([35.86, 104.20], 5);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+    </script>
 </body>
 </html>
