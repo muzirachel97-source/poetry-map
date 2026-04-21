@@ -188,6 +188,24 @@
             710000, 810000, 820000
         ];
 
+        var labelOverrides = {
+            130000: [38.5, 116.0],
+            140000: [37.0, 112.3],
+            150000: [43.0, 114.0],
+            230000: [47.5, 128.0],
+            370000: [36.2, 118.5],
+            420000: [31.2, 112.2],
+            430000: [27.5, 111.5],
+            460000: [19.2, 109.7],
+            500000: [30.3, 107.3],
+            610000: [36.0, 109.0],
+            620000: [38.5, 101.5],
+            640000: [37.3, 106.2],
+            710000: [23.7, 121.0],
+            810000: [22.35, 114.15],
+            820000: [22.15, 113.55]
+        };
+
         function bindCityEvents(layer, style) {
             if (layer.feature && layer.feature.properties.name) {
                 layer.bindTooltip(layer.feature.properties.name, {
@@ -225,10 +243,17 @@
             L.geoJSON(provinceData, { style: provinceStyle }).addTo(map);
 
             provinceData.features.forEach(function(f) {
-                if (typeof f.properties.adcode !== 'number') return;
-                var pt = f.properties.centroid || f.properties.center;
-                if (!pt) return;
-                L.marker(L.latLng(pt[1], pt[0]), {
+                var code = f.properties.adcode;
+                if (typeof code !== 'number') return;
+                var center;
+                if (labelOverrides[code]) {
+                    center = L.latLng(labelOverrides[code][0], labelOverrides[code][1]);
+                } else {
+                    var pt = f.properties.centroid || f.properties.center;
+                    if (!pt) return;
+                    center = L.latLng(pt[1], pt[0]);
+                }
+                L.marker(center, {
                     icon: L.divIcon({
                         className: 'province-label',
                         html: '<span class="province-label-scroll">' + f.properties.name + '</span>',
