@@ -28,11 +28,16 @@
 
         #header h1 {
             font-size: 1.5rem;
+            letter-spacing: 6px;
         }
 
         #map {
             width: 100%;
             height: calc(100vh - 60px);
+        }
+
+        .leaflet-tile-pane {
+            filter: grayscale(100%) sepia(25%) brightness(1.05) contrast(0.95);
         }
     </style>
 </head>
@@ -43,14 +48,21 @@
     <div id="map"></div>
 
     <script>
-        var map = L.map('map', {
-            maxZoom: 10,
-            minZoom: 4
-        }).setView([35.86, 104.20], 5);
+        var chinaBounds = L.latLngBounds(
+            L.latLng(3, 73),
+            L.latLng(54, 135)
+        );
 
-        L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
-            maxZoom: 10,
-            attribution: '&copy; OpenStreetMap'
+        var map = L.map('map', {
+            maxZoom: 8,
+            minZoom: 4,
+            maxBounds: chinaBounds,
+            maxBoundsViscosity: 1.0
+        }).setView([33, 108], 5);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+            maxZoom: 8,
+            attribution: '&copy; OpenStreetMap &copy; CARTO'
         }).addTo(map);
 
         var poems = [
