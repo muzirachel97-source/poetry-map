@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诗词地图</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            background-color: #edf1ee;
+            color: #283830;
+        }
+
+        #header {
+            text-align: center;
+            padding: 24px 16px 18px;
+            background: linear-gradient(135deg, #1e4d38 0%, #2a6548 50%, #1e4d38 100%);
+            color: #e8f0ec;
+            position: relative;
+        }
+
+        #header h1 {
+            font-size: 1.6rem;
+            letter-spacing: 12px;
+            font-weight: 400;
+        }
+
+        .header-subtitle {
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            opacity: 0.6;
+            margin-top: 6px;
+            font-weight: 300;
+        }
+
+        .header-seal {
+            position: absolute;
+            right: 24px;
+            bottom: 16px;
+        }
+
+        #map {
+            width: 100%;
+            height: calc(100vh - 100px);
+        }
+
+        .leaflet-container {
+            background-color: #e8ede9;
+        }
+
+        #map-decor {
+            position: fixed;
+            top: 100px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 100px);
+            pointer-events: none;
+            z-index: 399;
+            overflow: hidden;
+        }
+
+        .leaflet-interactive:focus {
+            outline: none;
+        }
+
+        .province-label {
+            pointer-events: none;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .province-label-scroll {
+            display: inline-block;
+            position: relative;
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 15px;
+            color: #2a5040;
+            padding: 3px 14px;
+            background: linear-gradient(180deg,
+                rgba(232, 240, 236, 0.75) 0%,
+                rgba(240, 246, 242, 0.8) 50%,
+                rgba(232, 240, 236, 0.75) 100%);
+            border-left: 3px solid rgba(90, 143, 114, 0.35);
+            border-right: 3px solid rgba(90, 143, 114, 0.35);
+            border-radius: 3px;
+            box-shadow: 0 1px 4px rgba(30, 77, 56, 0.08);
+        }
+
+        .city-tooltip {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 16px;
+            color: #1e4d38;
+            background: rgba(237, 241, 238, 0.94);
+            border: 1px solid rgba(90, 143, 114, 0.4);
+            border-radius: 4px;
+            padding: 4px 10px;
+            box-shadow: 2px 2px 8px rgba(30, 77, 56, 0.08);
+        }
+
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #2a5040;
+            z-index: 1000;
+            background: rgba(240, 246, 242, 0.95);
+            padding: 20px 40px;
+            border-radius: 8px;
+            border: 1px solid rgba(90, 143, 114, 0.4);
+        }
+
+        #poem-panel {
+            position: fixed;
+            right: -460px;
+            top: 100px;
+            width: 420px;
+            max-height: calc(100vh - 120px);
+            background: linear-gradient(180deg,
+                rgba(240, 244, 241, 0.98) 0%,
+                rgba(233, 240, 236, 0.98) 100%);
+            border-left: 4px solid rgba(58, 112, 85, 0.4);
+            box-shadow: -4px 0 20px rgba(30, 77, 56, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: right 0.4s ease-out;
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+        }
+
+        #poem-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            padding: 20px 24px 12px;
+            border-bottom: 1px solid rgba(90, 143, 114, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            font-size: 1.3rem;
+            color: #1e4d38;
+            letter-spacing: 4px;
+        }
+
+        .panel-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: none;
+            font-size: 1.2rem;
+            color: #5a8f72;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel-close:hover {
+            background: rgba(90, 143, 114, 0.15);
+            color: #1e4d38;
+        }
+
+        .panel-back {
+            border: none;
+            background: none;
+            font-size: 0.95rem;
+            color: #5a8f72;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+        }
+
+        .panel-back:hover {
+            color: #1e4d38;
+        }
+
+        .poem-list {
+            padding: 8px 0;
+        }
+
+        .poem-list-item {
+            padding: 14px 18px;
+            margin: 6px 14px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 6px;
+            transition: all 0.25s ease;
+        }
+
+        .poem-list-item:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateX(-2px);
+            box-shadow: 2px 0 8px rgba(30, 77, 56, 0.06);
+        }
+
+        .poem-list-item .poem-title {
+            font-size: 1.1rem;
+            color: #1e4d38;
+        }
+
+        .poem-list-item .poem-poet {
+            font-size: 0.9rem;
+            color: #5a8f72;
+            margin-top: 4px;
+        }
+
+        .poem-detail {
+            padding: 20px 24px 32px;
+            position: relative;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath d='M20 80 Q40 60 60 80 Q80 100 100 80 Q120 60 140 80' fill='none' stroke='%233a7858' stroke-width='0.8' opacity='0.1'/%3E%3Cpath d='M60 140 Q80 120 100 140 Q120 160 140 140 Q160 120 180 140' fill='none' stroke='%233a7858' stroke-width='0.7' opacity='0.08'/%3E%3Ccircle cx='160' cy='40' r='8' fill='none' stroke='%233a7858' stroke-width='0.6' opacity='0.09'/%3E%3Ccircle cx='160' cy='40' r='3' fill='none' stroke='%233a7858' stroke-width='0.5' opacity='0.07'/%3E%3C/svg%3E");
+        }
+
+        .poem-detail .detail-title {
+            font-size: 1.4rem;
+            color: #1e4d38;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .poem-detail .detail-poet {
+            font-size: 1rem;
+            color: #5a8f72;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .poem-detail .detail-preface {
+            font-size: 0.9rem;
+            color: #6a8a78;
+            line-height: 1.9;
+            text-align: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed rgba(90, 143, 114, 0.3);
+        }
+
+        .poem-detail .detail-content {
+            font-size: 1.15rem;
+            color: #2a3a30;
+            line-height: 2.2;
+            text-align: center;
+            white-space: pre-line;
+        }
+
+        .poem-count {
+            font-size: 0.85rem;
+            color: #65a082;
+            padding: 0 24px 4px;
+        }
+
+        #legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(240, 244, 241, 0.9);
+            border: 1px solid rgba(90, 143, 114, 0.25);
+            border-radius: 6px;
+            padding: 8px 12px;
+            z-index: 1000;
+            font-size: 0.75rem;
+            color: #2a4b3e;
+            box-shadow: 1px 1px 6px rgba(30, 77, 56, 0.06);
+            opacity: 0.85;
+        }
+
+        #legend h4 {
+            margin-bottom: 4px;
+            font-size: 0.78rem;
+            letter-spacing: 2px;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 0;
+            margin-top: 8px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            padding: 4px 16px;
+            border: 1px solid rgba(232, 240, 236, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(232, 240, 236, 0.7);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .mode-btn:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+
+        .mode-btn.active {
+            background: rgba(232, 240, 236, 0.2);
+            color: #e8f0ec;
+            border-color: rgba(232, 240, 236, 0.6);
+        }
+
+        .mode-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(232, 240, 236, 0.85);
+        }
+
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 3px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border: 1px solid rgba(90, 143, 114, 0.4);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        @keyframes flySwallow {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-29vw, 14vh); }
+            50% { transform: translate(-57vw, 18vh); }
+            75% { transform: translate(-86vw, 34vh); }
+            100% { transform: translate(-115vw, 42vh); }
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-1.5deg); }
+            50% { transform: rotate(2.5deg); }
+        }
+
+        .swallow {
+            position: absolute;
+            pointer-events: none;
+            animation: flySwallow linear infinite;
+        }
+
+        .swallow-1 {
+            top: 6%;
+            right: -50px;
+            width: 42px;
+            height: 26px;
+            opacity: 0.3;
+            animation-duration: 18s;
+        }
+
+        .swallow-2 {
+            top: 18%;
+            right: -80px;
+            width: 34px;
+            height: 22px;
+            opacity: 0.25;
+            animation-duration: 23s;
+            animation-delay: 7s;
+        }
+
+        .swallow-3 {
+            top: 3%;
+            right: -35px;
+            width: 28px;
+            height: 18px;
+            opacity: 0.2;
+            animation-duration: 28s;
+            animation-delay: 14s;
+        }
+
+        .willow-group {
+            position: absolute;
+            top: 0;
+            left: 8px;
+            width: 140px;
+            height: 340px;
+            transform-origin: 50% 0;
+            animation: sway 5s ease-in-out infinite;
+        }
+
+        #fog-overlay {
+            position: fixed;
+            top: 100px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 100px);
+            pointer-events: none;
+            z-index: 398;
+            background:
+                radial-gradient(ellipse at center, transparent 35%, rgba(232, 237, 233, 0.4) 100%),
+                linear-gradient(180deg, rgba(232, 237, 233, 0.2) 0%, transparent 18%, transparent 75%, rgba(232, 237, 233, 0.15) 100%);
+        }
+
+        .province-label-scroll {
+            font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif !important;
+        }
+
+        .city-tooltip {
+            font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif !important;
+        }
+
+        .dynasty-seal {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            margin-right: 4px;
+            position: relative;
+            top: -1px;
+        }
+
+        .poem-pillar-wrap {
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .poem-pillar {
+            width: 6px;
+            border-radius: 3px 3px 1px 1px;
+            transition: all 0.3s ease;
+        }
+
+        .poem-pillar-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: -1px;
+            transition: all 0.3s ease;
+        }
+
+        .pillar-glow .poem-pillar {
+            transform: scaleX(1.6) scaleY(1.12);
+        }
+
+        .pillar-glow .poem-pillar-dot {
+            transform: scale(1.8);
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>诗词地图</h1>
+        <div class="header-subtitle">唐宋诗词 · 山川足迹</div>
+        <div class="mode-toggle">
+            <button class="mode-btn" onclick="switchMode('tangshi')">唐诗</button>
+            <button class="mode-btn" onclick="switchMode('songci')">宋词</button>
+            <button class="mode-btn active" onclick="switchMode('all')">全部</button>
+        </div>
+        <svg class="header-seal" viewBox="0 0 34 34" width="34" height="34">
+            <defs>
+                <mask id="seal-mask">
+                    <rect width="34" height="34" fill="white"/>
+                    <text x="17" y="25" text-anchor="middle" font-size="22" font-family="SimSun, 宋体, serif" font-weight="700" fill="black">诗</text>
+                </mask>
+            </defs>
+            <rect width="34" height="34" rx="2" fill="rgba(180, 58, 48, 0.78)" mask="url(#seal-mask)"/>
+        </svg>
+    </div>
+    <div id="map"></div>
+    <div id="fog-overlay"></div>
+    <svg style="position:absolute;width:0;height:0;">
+        <defs>
+            <mask id="seal-tang-mask">
+                <rect width="18" height="18" fill="white"/>
+                <text x="9" y="14" text-anchor="middle" font-size="12" font-family="SimSun, 宋体, serif" font-weight="700" fill="black">唐</text>
+            </mask>
+            <mask id="seal-song-mask">
+                <rect width="18" height="18" fill="white"/>
+                <text x="9" y="14" text-anchor="middle" font-size="12" font-family="SimSun, 宋体, serif" font-weight="700" fill="black">宋</text>
+            </mask>
+        </defs>
+    </svg>
+    <div id="map-decor">
+        <!-- 底部连绵山峦（铺满整个底边，水墨风） -->
+        <svg style="position:absolute;bottom:0;left:0;width:100%;height:220px;" viewBox="0 0 1440 220" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="mg1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#3a7055" stop-opacity="0.12"/>
+                    <stop offset="55%" stop-color="#3a7055" stop-opacity="0.06"/>
+                    <stop offset="100%" stop-color="#3a7055" stop-opacity="0.01"/>
+                </linearGradient>
+                <linearGradient id="mg2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2a5040" stop-opacity="0.22"/>
+                    <stop offset="45%" stop-color="#3a7055" stop-opacity="0.12"/>
+                    <stop offset="100%" stop-color="#5a8f72" stop-opacity="0.02"/>
+                </linearGradient>
+                <linearGradient id="mg3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#5a8f72" stop-opacity="0.1"/>
+                    <stop offset="100%" stop-color="#8aba9c" stop-opacity="0.01"/>
+                </linearGradient>
+            </defs>
+            <!-- 远山（渐变雾化） -->
+            <path d="M0 220 L0 150 Q45 132 90 98 Q110 78 130 108 Q170 142 240 155 Q280 142 310 100 Q325 60 340 65 Q362 75 400 115 Q445 150 500 158 Q558 150 600 118 Q622 86 635 76 Q648 70 662 88 Q692 110 732 130 Q756 122 778 102 Q792 86 802 92 Q822 108 870 138 Q922 158 982 158 Q1022 150 1060 110 Q1082 76 1098 56 Q1108 48 1118 62 Q1138 82 1182 120 Q1222 145 1272 150 Q1302 142 1328 112 Q1342 96 1352 95 Q1368 100 1402 128 Q1422 140 1440 148 L1440 220 Z"
+                  fill="url(#mg1)"/>
+            <!-- 中景山（渐变雾化+轮廓） -->
+            <path d="M0 220 L0 168 Q52 156 102 142 Q142 124 172 108 Q188 98 198 104 Q222 120 282 150 Q342 160 402 150 Q432 142 462 118 Q482 96 498 84 Q508 76 515 82 Q532 98 582 128 Q622 148 682 155 Q722 150 752 134 Q778 118 792 104 Q802 96 812 100 Q828 112 872 138 Q922 155 972 160 Q1012 156 1042 142 Q1062 128 1082 112 Q1095 100 1104 105 Q1122 118 1172 142 Q1222 158 1282 152 Q1312 146 1342 128 Q1362 114 1378 108 Q1388 104 1398 110 Q1412 120 1440 135 L1440 220 Z"
+                  fill="url(#mg2)"/>
+            <path d="M0 168 Q52 156 102 142 Q142 124 172 108 Q188 98 198 104 Q222 120 282 150 Q342 160 402 150 Q432 142 462 118 Q482 96 498 84 Q508 76 515 82 Q532 98 582 128 Q622 148 682 155 Q722 150 752 134 Q778 118 792 104 Q802 96 812 100 Q828 112 872 138 Q922 155 972 160 Q1012 156 1042 142 Q1062 128 1082 112 Q1095 100 1104 105 Q1122 118 1172 142 Q1222 158 1282 152 Q1312 146 1342 128 Q1362 114 1378 108 Q1388 104 1398 110 Q1412 120 1440 135"
+                  fill="none" stroke="#2a5040" stroke-width="1.2" opacity="0.18"/>
+            <!-- 前景近山剪影 -->
+            <path d="M0 220 L0 188 Q32 182 62 176 Q82 168 98 172 Q118 180 158 190 Q198 196 238 192 Q268 186 292 178 Q308 170 318 174 Q338 182 388 194 Q428 198 468 194 Q508 186 538 176 Q552 168 562 170 Q578 176 618 188 Q668 196 718 190 Q748 184 772 174 Q786 166 796 170 Q816 178 866 192 Q916 198 968 194 Q1008 186 1038 176 Q1052 168 1062 172 Q1082 180 1132 192 Q1172 196 1212 190 Q1242 184 1266 174 Q1278 168 1288 172 Q1308 180 1358 192 Q1398 196 1440 190 L1440 220 Z"
+                  fill="#2a5040" opacity="0.22"/>
+            <!-- 前景雾霭 -->
+            <path d="M0 220 L0 196 Q125 182 245 190 Q365 198 485 186 Q605 174 725 182 Q845 194 965 180 Q1085 168 1205 178 Q1325 190 1440 180 L1440 220 Z"
+                  fill="url(#mg3)"/>
+        </svg>
+
+        <!-- 飞燕（人字形简笔画） -->
+        <svg class="swallow swallow-1" viewBox="0 0 36 20">
+            <path d="M0 0 Q8 6 18 10 Q8 14 0 20" fill="none" stroke="#2a5040" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="swallow swallow-2" viewBox="0 0 36 20">
+            <path d="M0 0 Q8 6 18 10 Q8 14 0 20" fill="none" stroke="#2a5040" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="swallow swallow-3" viewBox="0 0 36 20">
+            <path d="M0 0 Q8 6 18 10 Q8 14 0 20" fill="none" stroke="#2a5040" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        <!-- 左上角垂柳（带摇曳动画） -->
+        <svg class="willow-group" viewBox="0 0 140 340">
+            <!-- 树干 -->
+            <path d="M70 0 Q72 20 68 42 Q65 55 68 68" fill="none" stroke="#3a7055" stroke-width="3.5" opacity="0.28" stroke-linecap="round"/>
+            <!-- 主枝条+叶片 -->
+            <g opacity="0.22">
+                <path d="M68 36 Q55 70 48 115 Q42 160 46 210 Q50 245 42 285" fill="none" stroke="#3a7055" stroke-width="1.8"/>
+                <path d="M52 90 Q48 94 44 92" fill="none" stroke="#3a7055" stroke-width="1" opacity="0.7"/>
+                <path d="M46 130 Q42 134 38 132" fill="none" stroke="#3a7055" stroke-width="0.9" opacity="0.6"/>
+                <path d="M44 170 Q40 175 36 172" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.55"/>
+                <path d="M46 210 Q42 215 38 212" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.5"/>
+                <path d="M44 250 Q40 255 36 252" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.45"/>
+            </g>
+            <g opacity="0.2">
+                <path d="M72 32 Q82 68 86 115 Q90 165 84 215 Q78 255 82 295" fill="none" stroke="#3a7055" stroke-width="1.6"/>
+                <path d="M84 85 Q88 89 92 87" fill="none" stroke="#3a7055" stroke-width="1" opacity="0.7"/>
+                <path d="M88 125 Q92 129 96 127" fill="none" stroke="#3a7055" stroke-width="0.9" opacity="0.6"/>
+                <path d="M86 170 Q90 175 94 172" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.55"/>
+                <path d="M84 215 Q88 220 92 217" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
+            </g>
+            <g opacity="0.18">
+                <path d="M65 42 Q48 78 40 120 Q32 168 38 215 Q44 248 36 280" fill="none" stroke="#3a7055" stroke-width="1.4"/>
+                <path d="M44 100 Q40 104 36 101" fill="none" stroke="#3a7055" stroke-width="0.9" opacity="0.6"/>
+                <path d="M36 145 Q32 149 28 146" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.55"/>
+                <path d="M38 190 Q34 195 30 192" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
+                <path d="M36 240 Q32 244 28 241" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.45"/>
+            </g>
+            <g opacity="0.16">
+                <path d="M75 48 Q92 85 98 130 Q104 175 96 220 Q88 255 94 290" fill="none" stroke="#3a7055" stroke-width="1.3"/>
+                <path d="M96 105 Q100 109 104 106" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.6"/>
+                <path d="M100 150 Q104 155 108 152" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.55"/>
+                <path d="M96 200 Q100 205 104 202" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
+            </g>
+            <g opacity="0.14">
+                <path d="M66 28 Q50 58 42 95 Q34 138 40 180 Q46 210 38 245" fill="none" stroke="#3a7055" stroke-width="1.2"/>
+                <path d="M46 80 Q42 84 38 81" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.6"/>
+                <path d="M38 125 Q34 129 30 126" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.55"/>
+                <path d="M40 170 Q36 174 32 171" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
+            </g>
+            <g opacity="0.12">
+                <path d="M78 52 Q96 90 102 135 Q108 175 100 210 Q92 238 98 265" fill="none" stroke="#3a7055" stroke-width="1.1"/>
+                <path d="M100 115 Q104 119 108 116" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.55"/>
+                <path d="M102 160 Q106 165 110 162" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
+            </g>
+        </svg>
+    </div>
+    <div id="loading">地图加载中...</div>
+
+    <div id="legend">
+        <h4 id="legend-title">诗词数量</h4>
+        <div class="legend-row"><span class="legend-color" style="background:#edf1ee"></span> 0</div>
+        <div class="legend-row"><span class="legend-color" style="background:#d8e3dc"></span> 1-2</div>
+        <div class="legend-row"><span class="legend-color" style="background:#b0ccba"></span> 3-5</div>
+        <div class="legend-row"><span class="legend-color" style="background:#85ad94"></span> 6-10</div>
+        <div class="legend-row"><span class="legend-color" style="background:#5a8f72"></span> 11-20</div>
+        <div class="legend-row"><span class="legend-color" style="background:#3a7055"></span> 21-50</div>
+        <div class="legend-row"><span class="legend-color" style="background:#1e4d38"></span> 50+</div>
+    </div>
+
+    <div id="poem-panel">
+        <div class="panel-header">
+            <span id="panel-back-btn"></span>
+            <h2 id="panel-title"></h2>
+            <button class="panel-close" onclick="closePanel()">&#x2715;</button>
+        </div>
+        <div id="panel-body"></div>
+    </div>
+
+    <script src="poems_data.js"></script>
+    <script>
+        var map = L.map('map', {
+            zoomControl: true,
+            minZoom: 4,
+            maxZoom: 8
+        }).setView([33, 105], 5);
+
+        map.createPane('cityPane');
+        map.getPane('cityPane').style.zIndex = 400;
+
+        map.createPane('provincePane');
+        map.getPane('provincePane').style.zIndex = 450;
+
+        map.createPane('pillarPane');
+        map.getPane('pillarPane').style.zIndex = 410;
+
+        map.createPane('labelPane');
+        map.getPane('labelPane').style.zIndex = 460;
+
+        function poemColor(count) {
+            if (!count) return '#edf1ee';
+            if (count <= 2) return '#d8e3dc';
+            if (count <= 5) return '#b0ccba';
+            if (count <= 10) return '#85ad94';
+            if (count <= 20) return '#5a8f72';
+            if (count <= 50) return '#3a7055';
+            return '#1e4d38';
+        }
+
+        var cityStyle = {
+            color: 'rgba(90, 143, 114, 0.3)',
+            weight: 0.5,
+            fillColor: '#edf1ee',
+            fillOpacity: 1,
+            pane: 'cityPane'
+        };
+
+        var wholeRegionStyle = {
+            color: 'rgba(90, 143, 114, 0.3)',
+            weight: 0,
+            fillColor: '#edf1ee',
+            fillOpacity: 1,
+            pane: 'cityPane'
+        };
+
+        var provinceStyle = {
+            color: 'rgba(58, 112, 85, 0.6)',
+            weight: 1,
+            fill: false,
+            pane: 'provincePane'
+        };
+
+        var highlightStyle = {
+            fillColor: '#dce8e1',
+            fillOpacity: 1
+        };
+
+        var activeStyle = {
+            fillColor: '#c8e0d3',
+            fillOpacity: 1
+        };
+
+        function pillarHeight(count) {
+            if (!count) return 0;
+            if (count <= 2) return 16;
+            if (count <= 5) return 24;
+            if (count <= 10) return 32;
+            if (count <= 20) return 42;
+            if (count <= 50) return 54;
+            return 68;
+        }
+
+        var pillarMarkers = [];
+        var pillarMap = {};
+
+        function clearPillars() {
+            pillarMarkers.forEach(function(m) { map.removeLayer(m); });
+            pillarMarkers = [];
+            pillarMap = {};
+        }
+
+        function createPillars() {
+            cityLayers.forEach(function(item) {
+                var name = item.name;
+                var count = poemsByCity[name] ? poemsByCity[name].length : 0;
+                if (!count) return;
+                var h = pillarHeight(count);
+                var color = poemColor(count);
+                var center = item.layer.getBounds().getCenter();
+                var marker = L.marker(center, {
+                    icon: L.divIcon({
+                        className: '',
+                        html: '<div class="poem-pillar-wrap" id="pillar-' + name + '">'
+                            + '<div class="poem-pillar" style="height:' + h + 'px;'
+                            + 'background:linear-gradient(to top,' + color + ',' + color + '88,' + color + '22,transparent);'
+                            + 'box-shadow:0 0 8px ' + color + '88;"></div>'
+                            + '<div class="poem-pillar-dot" style="background:' + color + ';box-shadow:0 0 6px ' + color + ';"></div>'
+                            + '</div>',
+                        iconSize: [6, h + 8],
+                        iconAnchor: [3, h + 8]
+                    }),
+                    interactive: false,
+                    pane: 'pillarPane'
+                }).addTo(map);
+                pillarMarkers.push(marker);
+                pillarMap[name] = 'pillar-' + name;
+            });
+        }
+
+        var poemsByCity = allByCity;
+        var currentMode = 'all';
+        var cityLayers = [];
+
+        var activeLayer = null;
+        var activeLayerStyle = null;
+        var hoveredLayer = null;
+
+        function switchMode(mode) {
+            currentMode = mode;
+            if (mode === 'tangshi') {
+                poemsByCity = tangshiByCity;
+            } else if (mode === 'songci') {
+                poemsByCity = songciByCity;
+            } else {
+                poemsByCity = allByCity;
+            }
+
+            var titles = { tangshi: '唐诗数量', songci: '宋词数量', all: '诗词数量' };
+            document.getElementById('legend-title').textContent = titles[mode];
+
+            var btns = document.querySelectorAll('.mode-btn');
+            btns.forEach(function(btn) { btn.classList.remove('active'); });
+            var modeIdx = { tangshi: 0, songci: 1, all: 2 };
+            btns[modeIdx[mode]].classList.add('active');
+
+            activeLayer = null;
+
+            cityLayers.forEach(function(item) {
+                var name = item.name;
+                var count = poemsByCity[name] ? poemsByCity[name].length : 0;
+                var s = {
+                    color: 'rgba(90, 143, 114, 0.3)',
+                    weight: 0.5,
+                    fillColor: poemColor(count),
+                    fillOpacity: 1,
+                    pane: 'cityPane'
+                };
+                item.layer.setStyle(s);
+                item.style = s;
+            });
+
+            clearPillars();
+            createPillars();
+
+            closePanel();
+        }
+
+        function closePanel() {
+            document.getElementById('poem-panel').classList.remove('open');
+            if (activeLayer) {
+                activeLayer.setStyle(activeLayerStyle);
+                activeLayer = null;
+            }
+        }
+
+        function showPoemList(cityName, poems) {
+            var panel = document.getElementById('poem-panel');
+            var title = document.getElementById('panel-title');
+            var body = document.getElementById('panel-body');
+            var backBtn = document.getElementById('panel-back-btn');
+
+            title.textContent = cityName;
+            backBtn.innerHTML = '';
+
+            var html = '<div class="poem-count">共 ' + poems.length + ' 首</div><div class="poem-list">';
+            poems.forEach(function(poem, i) {
+                var sealHtml = '';
+                if (poem.dynasty) {
+                    var maskId = poem.dynasty === '唐' ? 'seal-tang-mask' : 'seal-song-mask';
+                    sealHtml = '<svg class="dynasty-seal" viewBox="0 0 18 18" width="18" height="18">'
+                        + '<rect width="18" height="18" rx="1" fill="rgba(180, 58, 48, 0.68)" mask="url(#' + maskId + ')"/>'
+                        + '</svg>';
+                }
+                html += '<div class="poem-list-item" onclick="showPoemDetail(\'' + cityName + '\',' + i + ')">'
+                    + '<div class="poem-title">' + poem.title + '</div>'
+                    + '<div class="poem-poet">' + sealHtml + poem.poet + '</div>'
+                    + '</div>';
+            });
+            html += '</div>';
+            body.innerHTML = html;
+            panel.classList.add('open');
+        }
+
+        function showPoemDetail(cityName, index) {
+            var poems = poemsByCity[cityName];
+            var poem = poems[index];
+            var title = document.getElementById('panel-title');
+            var body = document.getElementById('panel-body');
+            var backBtn = document.getElementById('panel-back-btn');
+
+            title.textContent = '';
+            backBtn.innerHTML = '<button class="panel-back" onclick="showPoemList(\'' + cityName + '\', poemsByCity[\'' + cityName + '\'])">← 返回列表</button>';
+
+            var sealHtml = '';
+            if (poem.dynasty) {
+                var maskId = poem.dynasty === '唐' ? 'seal-tang-mask' : 'seal-song-mask';
+                sealHtml = '<svg class="dynasty-seal" viewBox="0 0 18 18" width="18" height="18">'
+                    + '<rect width="18" height="18" rx="1" fill="rgba(180, 58, 48, 0.68)" mask="url(#' + maskId + ')"/>'
+                    + '</svg>';
+            }
+            var prefaceHtml = poem.preface
+                ? '<div class="detail-preface">' + poem.preface + '</div>'
+                : '';
+            body.innerHTML = '<div class="poem-detail">'
+                + '<div class="detail-title">' + poem.title + '</div>'
+                + '<div class="detail-poet">' + sealHtml + poem.poet + '</div>'
+                + prefaceHtml
+                + '<div class="detail-content">' + poem.content + '</div>'
+                + '</div>';
+        }
+
+        var noExpand = [
+            110000, 120000, 310000, 500000,
+            710000, 810000, 820000
+        ];
+
+        var labelOverrides = {
+            130000: [38.5, 116.0],
+            140000: [37.0, 112.3],
+            150000: [43.0, 114.0],
+            230000: [47.5, 128.0],
+            370000: [36.2, 118.5],
+            420000: [31.2, 112.2],
+            430000: [27.5, 111.5],
+            460000: [19.2, 109.7],
+            500000: [30.3, 107.3],
+            610000: [36.0, 109.0],
+            620000: [38.5, 101.5],
+            640000: [37.3, 106.2],
+            710000: [23.7, 121.0],
+            810000: [22.35, 114.15],
+            820000: [22.15, 113.55]
+        };
+
+        function findCityItem(layer) {
+            for (var i = 0; i < cityLayers.length; i++) {
+                if (cityLayers[i].layer === layer) return cityLayers[i];
+            }
+            return null;
+        }
+
+        function bindCityEvents(layer, style) {
+            var name = layer.feature && layer.feature.properties.name;
+            if (name) {
+                layer.bindTooltip(name, {
+                    className: 'city-tooltip',
+                    direction: 'center',
+                    sticky: false
+                });
+            }
+            layer.on('mouseover', function() {
+                if (hoveredLayer && hoveredLayer !== layer) {
+                    hoveredLayer.closeTooltip();
+                    if (activeLayer !== hoveredLayer) {
+                        var prevItem = findCityItem(hoveredLayer);
+                        hoveredLayer.setStyle(prevItem ? prevItem.style : style);
+                    }
+                    var prevName = hoveredLayer.feature && hoveredLayer.feature.properties.name;
+                    if (prevName && pillarMap[prevName]) {
+                        var prevEl = document.getElementById(pillarMap[prevName]);
+                        if (prevEl) prevEl.classList.remove('pillar-glow');
+                    }
+                }
+                hoveredLayer = layer;
+                if (activeLayer !== layer) {
+                    layer.setStyle(highlightStyle);
+                }
+                if (name && pillarMap[name]) {
+                    var el = document.getElementById(pillarMap[name]);
+                    if (el) el.classList.add('pillar-glow');
+                }
+            });
+            layer.on('mouseout', function() {
+                if (hoveredLayer === layer) {
+                    hoveredLayer = null;
+                }
+                if (activeLayer !== layer) {
+                    var item = findCityItem(layer);
+                    layer.setStyle(item ? item.style : style);
+                }
+                if (name && pillarMap[name]) {
+                    var el = document.getElementById(pillarMap[name]);
+                    if (el) el.classList.remove('pillar-glow');
+                }
+            });
+            layer.on('click', function() {
+                if (name && poemsByCity[name]) {
+                    if (activeLayer && activeLayer !== layer) {
+                        var prevItem = findCityItem(activeLayer);
+                        activeLayer.setStyle(prevItem ? prevItem.style : activeLayerStyle);
+                    }
+                    activeLayer = layer;
+                    var curItem = findCityItem(layer);
+                    activeLayerStyle = curItem ? curItem.style : style;
+                    layer.setStyle(activeStyle);
+                    showPoemList(name, poemsByCity[name]);
+                }
+            });
+        }
+
+        function renderMap(provinceData, cityResults, wholeFeatures) {
+            document.getElementById('loading').style.display = 'none';
+
+            wholeFeatures.forEach(function(feature) {
+                L.geoJSON({ type: 'FeatureCollection', features: [feature] }, {
+                    style: wholeRegionStyle,
+                    onEachFeature: function(f, layer) { bindCityEvents(layer, wholeRegionStyle); }
+                }).addTo(map);
+            });
+
+            cityResults.forEach(function(data) {
+                if (!data) return;
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        var name = feature.properties.name;
+                        var count = poemsByCity[name] ? poemsByCity[name].length : 0;
+                        return {
+                            color: 'rgba(90, 143, 114, 0.4)',
+                            weight: 0.5,
+                            fillColor: poemColor(count),
+                            fillOpacity: 1,
+                            pane: 'cityPane'
+                        };
+                    },
+                    onEachFeature: function(f, layer) {
+                        var name = f.properties.name;
+                        var count = poemsByCity[name] ? poemsByCity[name].length : 0;
+                        var s = {
+                            color: 'rgba(90, 143, 114, 0.4)',
+                            weight: 0.5,
+                            fillColor: poemColor(count),
+                            fillOpacity: 1,
+                            pane: 'cityPane'
+                        };
+                        var item = { name: name, layer: layer, style: s };
+                        cityLayers.push(item);
+                        bindCityEvents(layer, s);
+                    }
+                }).addTo(map);
+            });
+
+            L.geoJSON(provinceData, { style: provinceStyle }).addTo(map);
+
+            provinceData.features.forEach(function(f) {
+                var code = f.properties.adcode;
+                if (typeof code !== 'number') return;
+                var center;
+                if (labelOverrides[code]) {
+                    center = L.latLng(labelOverrides[code][0], labelOverrides[code][1]);
+                } else {
+                    var pt = f.properties.centroid || f.properties.center;
+                    if (!pt) return;
+                    center = L.latLng(pt[1], pt[0]);
+                }
+                L.marker(center, {
+                    icon: L.divIcon({
+                        className: 'province-label',
+                        html: '<span class="province-label-scroll">' + f.properties.name + '</span>',
+                        iconSize: null
+                    }),
+                    interactive: false,
+                    pane: 'labelPane'
+                }).addTo(map);
+            });
+
+            createPillars();
+        }
+
+        fetch('geo/100000_full.json')
+            .then(function(r) { return r.json(); })
+            .then(function(provinceData) {
+                var expandCodes = [];
+                var wholeFeatures = [];
+
+                provinceData.features.forEach(function(f) {
+                    var code = f.properties.adcode;
+                    if (typeof code === 'number' && noExpand.indexOf(code) === -1) {
+                        expandCodes.push(code);
+                    } else if (typeof code === 'number') {
+                        wholeFeatures.push(f);
+                    }
+                });
+
+                return Promise.all(expandCodes.map(function(code) {
+                    return fetch('geo/' + code + '_full.json')
+                        .then(function(r) {
+                            if (!r.ok) return null;
+                            return r.json();
+                        })
+                        .catch(function() { return null; });
+                })).then(function(cityResults) {
+                    renderMap(provinceData, cityResults, wholeFeatures);
+                });
+            })
+            .catch(function(err) {
+                document.getElementById('loading').textContent = '地图加载失败，请刷新重试';
+            });
+    </script>
+</body>
+</html>
