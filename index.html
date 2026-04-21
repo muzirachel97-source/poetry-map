@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
             background-color: #f5f0e8;
             color: #333;
         }
@@ -27,8 +27,8 @@
         }
 
         #header h1 {
-            font-size: 1.5rem;
-            letter-spacing: 6px;
+            font-size: 1.8rem;
+            letter-spacing: 8px;
         }
 
         #map {
@@ -36,8 +36,33 @@
             height: calc(100vh - 60px);
         }
 
-        .leaflet-tile-pane {
-            filter: saturate(0.6) brightness(1.08) contrast(0.82) blur(0.5px);
+        .leaflet-container {
+            background-color: #f5f0e8;
+        }
+
+        .city-tooltip {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 18px;
+            color: #5a3e2b;
+            background: rgba(245, 240, 232, 0.92);
+            border: 1px solid #c4a87c;
+            border-radius: 4px;
+            padding: 4px 10px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #5a3e2b;
+            z-index: 1000;
+            background: rgba(245, 240, 232, 0.95);
+            padding: 20px 40px;
+            border-radius: 8px;
+            border: 1px solid #c4a87c;
         }
     </style>
 </head>
@@ -46,25 +71,34 @@
         <h1>诗词地图</h1>
     </div>
     <div id="map"></div>
+    <div id="loading">地图加载中...</div>
 
     <script>
-        var chinaBounds = L.latLngBounds(
-            L.latLng(3, 73),
-            L.latLng(54, 135)
-        );
-
         var map = L.map('map', {
-            maxZoom: 8,
-            minZoom: 4,
-            maxBounds: chinaBounds,
-            maxBoundsViscosity: 1.0
-        }).setView([33, 108], 5);
+            zoomControl: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            touchZoom: false,
+            boxZoom: false
+        }).setView([33, 105], 5);
 
-        L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=8&x={x}&y={y}&z={z}', {
-            maxZoom: 8,
-            subdomains: ['1', '2', '3', '4'],
-            attribution: '&copy; 高德地图'
-        }).addTo(map);
+        var cityStyle = {
+            color: '#b8a080',
+            weight: 0.5,
+            fillColor: '#faf6ee',
+            fillOpacity: 1
+        };
+
+        var provinceStyle = {
+            color: '#8b7355',
+            weight: 1.5,
+            fill: false
+        };
+
+        var highlightStyle = {
+            fillColor: '#f0e6d3',
+            fillOpacity: 1
+        };
 
         var poems = [
             {
@@ -109,9 +143,53 @@
             }
         ];
 
-        poems.forEach(function(poem) {
-            L.marker([poem.lat, poem.lng]).addTo(map);
-        });
+        fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+            .then(function(r) { return r.json(); })
+            .then(function(provinceData) {
+                var adcodes = provinceData.features.map(function(f) {
+                    return f.properties.adcode;
+                });
+
+                return Promise.all(adcodes.map(function(code) {
+                    return fetch('https://geo.datav.aliyun.com/areas_v3/bound/' + code + '_full.json')
+                        .then(function(r) { return r.json(); })
+                        .catch(function() { return null; });
+                })).then(function(cityResults) {
+                    return { provinceData: provinceData, cityResults: cityResults };
+                });
+            })
+            .then(function(result) {
+                document.getElementById('loading').style.display = 'none';
+
+                result.cityResults.forEach(function(data) {
+                    if (!data) return;
+                    L.geoJSON(data, {
+                        style: cityStyle,
+                        onEachFeature: function(feature, layer) {
+                            if (feature.properties.name) {
+                                layer.bindTooltip(feature.properties.name, {
+                                    className: 'city-tooltip',
+                                    direction: 'center',
+                                    sticky: false
+                                });
+                            }
+                            layer.on('mouseover', function() {
+                                layer.setStyle(highlightStyle);
+                                layer.bringToFront();
+                            });
+                            layer.on('mouseout', function() {
+                                layer.setStyle(cityStyle);
+                            });
+                        }
+                    }).addTo(map);
+                });
+
+                L.geoJSON(result.provinceData, { style: provinceStyle }).addTo(map);
+
+                poems.forEach(function(poem) {
+                    L.marker([poem.lat, poem.lng]).addTo(map);
+                });
+            });
     </script>
 </body>
 </html>
