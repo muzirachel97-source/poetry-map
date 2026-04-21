@@ -75,11 +75,9 @@
 
     <script>
         var map = L.map('map', {
-            zoomControl: false,
-            scrollWheelZoom: false,
-            doubleClickZoom: false,
-            touchZoom: false,
-            boxZoom: false
+            zoomControl: true,
+            minZoom: 4,
+            maxZoom: 8
         }).setView([33, 105], 5);
 
         var cityStyle = {
