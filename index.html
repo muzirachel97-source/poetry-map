@@ -41,13 +41,26 @@
         }
 
         .province-label {
-            font-family: "KaiTi", "STKaiti", "楷体", serif;
-            font-size: 13px;
-            color: #6b5744;
+            pointer-events: none;
             white-space: nowrap;
             text-align: center;
-            pointer-events: none;
-            text-shadow: 1px 1px 2px rgba(250, 246, 238, 0.9);
+        }
+
+        .province-label-scroll {
+            display: inline-block;
+            position: relative;
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 13px;
+            color: #5a3e2b;
+            padding: 3px 14px;
+            background: linear-gradient(180deg,
+                rgba(240, 232, 215, 0.75) 0%,
+                rgba(248, 242, 230, 0.8) 50%,
+                rgba(240, 232, 215, 0.75) 100%);
+            border-left: 3px solid rgba(180, 150, 100, 0.5);
+            border-right: 3px solid rgba(180, 150, 100, 0.5);
+            border-radius: 3px;
+            box-shadow: 0 1px 4px rgba(90, 62, 43, 0.1);
         }
 
         .city-tooltip {
@@ -62,8 +75,8 @@
         }
 
         .poem-marker {
-            background: none;
-            border: none;
+            background: none !important;
+            border: none !important;
         }
 
         #loading {
@@ -95,24 +108,36 @@
             maxZoom: 8
         }).setView([33, 105], 5);
 
+        map.createPane('cityPane');
+        map.getPane('cityPane').style.zIndex = 400;
+
+        map.createPane('provincePane');
+        map.getPane('provincePane').style.zIndex = 450;
+
+        map.createPane('labelPane');
+        map.getPane('labelPane').style.zIndex = 460;
+
         var cityStyle = {
             color: '#b8a080',
             weight: 0.5,
             fillColor: '#faf6ee',
-            fillOpacity: 1
+            fillOpacity: 1,
+            pane: 'cityPane'
         };
 
         var wholeRegionStyle = {
             color: '#b8a080',
             weight: 0,
             fillColor: '#faf6ee',
-            fillOpacity: 1
+            fillOpacity: 1,
+            pane: 'cityPane'
         };
 
         var provinceStyle = {
-            color: '#7a6650',
-            weight: 2.5,
-            fill: false
+            color: '#6b5540',
+            weight: 3,
+            fill: false,
+            pane: 'provincePane'
         };
 
         var highlightStyle = {
@@ -120,17 +145,31 @@
             fillOpacity: 1
         };
 
-        var brushSvg = '<svg width="18" height="38" viewBox="0 0 18 38" xmlns="http://www.w3.org/2000/svg">'
-            + '<rect x="7" y="0" width="4" height="16" rx="1.5" fill="#8b6914" opacity="0.9"/>'
-            + '<rect x="6" y="14" width="6" height="4" rx="1" fill="#a08050"/>'
-            + '<path d="M9 17 C9 17 2 26 2 30 C2 34 5 37 9 38 C13 37 16 34 16 30 C16 26 9 17 9 17Z" fill="#2a1810" opacity="0.85"/>'
+        var brushSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="50" viewBox="0 0 22 50">'
+            + '<defs>'
+            + '<linearGradient id="bh" x1="0" y1="0" x2="1" y2="1">'
+            + '<stop offset="0%" stop-color="#dcc488"/>'
+            + '<stop offset="100%" stop-color="#9b7a30"/>'
+            + '</linearGradient>'
+            + '<radialGradient id="bt" cx="45%" cy="35%" r="60%">'
+            + '<stop offset="0%" stop-color="#4a3525" stop-opacity="0.95"/>'
+            + '<stop offset="70%" stop-color="#1a0e08" stop-opacity="0.85"/>'
+            + '<stop offset="100%" stop-color="#0a0504" stop-opacity="0.5"/>'
+            + '</radialGradient>'
+            + '</defs>'
+            + '<rect x="8" y="0" width="6" height="22" rx="3" fill="url(#bh)" opacity="0.82"/>'
+            + '<line x1="8.5" y1="7" x2="13.5" y2="7" stroke="#b89848" stroke-width="0.4" opacity="0.35"/>'
+            + '<line x1="8.5" y1="14" x2="13.5" y2="14" stroke="#b89848" stroke-width="0.4" opacity="0.35"/>'
+            + '<ellipse cx="11" cy="22" rx="5" ry="2.2" fill="#7a6248" opacity="0.6"/>'
+            + '<path d="M11 21 C8 27 3.5 35 4 40 C4.5 44 7 47.5 11 50 C15 47.5 17.5 44 18 40 C18.5 35 14 27 11 21Z" fill="url(#bt)"/>'
+            + '<path d="M11 24 C9 28 6 34 6 38 C6 40 7.5 43 10 46" stroke="rgba(255,255,255,0.08)" stroke-width="1.2" fill="none"/>'
             + '</svg>';
 
-        var brushIcon = L.divIcon({
-            className: 'poem-marker',
-            html: brushSvg,
-            iconSize: [18, 38],
-            iconAnchor: [9, 38]
+        var brushIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(brushSvg);
+        var brushIcon = L.icon({
+            iconUrl: brushIconUrl,
+            iconSize: [22, 50],
+            iconAnchor: [11, 50]
         });
 
         var poems = [
@@ -225,7 +264,6 @@
                             }
                             layer.on('mouseover', function() {
                                 layer.setStyle(highlightStyle);
-                                layer.bringToFront();
                             });
                             layer.on('mouseout', function() {
                                 layer.setStyle(wholeRegionStyle);
@@ -248,7 +286,6 @@
                             }
                             layer.on('mouseover', function() {
                                 layer.setStyle(highlightStyle);
-                                layer.bringToFront();
                             });
                             layer.on('mouseout', function() {
                                 layer.setStyle(cityStyle);
@@ -266,10 +303,11 @@
                     L.marker(center, {
                         icon: L.divIcon({
                             className: 'province-label',
-                            html: f.properties.name,
+                            html: '<span class="province-label-scroll">' + f.properties.name + '</span>',
                             iconSize: null
                         }),
-                        interactive: false
+                        interactive: false,
+                        pane: 'labelPane'
                     }).addTo(map);
                 });
 
