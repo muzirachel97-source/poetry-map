@@ -87,6 +87,133 @@
             border-radius: 8px;
             border: 1px solid #c4a87c;
         }
+
+        #poem-panel {
+            position: fixed;
+            right: -400px;
+            top: 60px;
+            width: 360px;
+            max-height: calc(100vh - 80px);
+            background: linear-gradient(180deg,
+                rgba(248, 242, 230, 0.97) 0%,
+                rgba(242, 235, 220, 0.97) 100%);
+            border-left: 4px solid rgba(180, 150, 100, 0.6);
+            box-shadow: -4px 0 20px rgba(90, 62, 43, 0.15);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: right 0.35s ease;
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+        }
+
+        #poem-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            padding: 20px 24px 12px;
+            border-bottom: 1px solid rgba(180, 150, 100, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            font-size: 1.3rem;
+            color: #5a3e2b;
+            letter-spacing: 4px;
+        }
+
+        .panel-close {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: none;
+            font-size: 1.2rem;
+            color: #8b7355;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel-close:hover {
+            background: rgba(180, 150, 100, 0.2);
+            color: #5a3e2b;
+        }
+
+        .panel-back {
+            border: none;
+            background: none;
+            font-size: 0.95rem;
+            color: #8b7355;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+        }
+
+        .panel-back:hover {
+            color: #5a3e2b;
+        }
+
+        .poem-list {
+            padding: 8px 0;
+        }
+
+        .poem-list-item {
+            padding: 14px 24px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(180, 150, 100, 0.15);
+            transition: background 0.2s;
+        }
+
+        .poem-list-item:hover {
+            background: rgba(180, 150, 100, 0.12);
+        }
+
+        .poem-list-item .poem-title {
+            font-size: 1.1rem;
+            color: #5a3e2b;
+        }
+
+        .poem-list-item .poem-poet {
+            font-size: 0.9rem;
+            color: #8b7355;
+            margin-top: 4px;
+        }
+
+        .poem-detail {
+            padding: 20px 24px 32px;
+        }
+
+        .poem-detail .detail-title {
+            font-size: 1.4rem;
+            color: #5a3e2b;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .poem-detail .detail-poet {
+            font-size: 1rem;
+            color: #8b7355;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .poem-detail .detail-content {
+            font-size: 1.15rem;
+            color: #4a3525;
+            line-height: 2.2;
+            text-align: center;
+            white-space: pre-line;
+        }
+
+        .poem-count {
+            font-size: 0.85rem;
+            color: #a08060;
+            padding: 0 24px 4px;
+        }
     </style>
 </head>
 <body>
@@ -95,6 +222,15 @@
     </div>
     <div id="map"></div>
     <div id="loading">地图加载中...</div>
+
+    <div id="poem-panel">
+        <div class="panel-header">
+            <span id="panel-back-btn"></span>
+            <h2 id="panel-title"></h2>
+            <button class="panel-close" onclick="closePanel()">✕</button>
+        </div>
+        <div id="panel-body"></div>
+    </div>
 
     <script>
         var map = L.map('map', {
@@ -140,48 +276,80 @@
             fillOpacity: 1
         };
 
-        var poems = [
-            {
-                name: "白帝城",
-                lat: 31.04,
-                lng: 109.55,
-                poet: "李白",
-                title: "早发白帝城",
-                content: "朝辞白帝彩云间，千里江陵一日还。\n两岸猿声啼不住，轻舟已过万重山。"
-            },
-            {
-                name: "岳阳楼",
-                lat: 29.37,
-                lng: 113.09,
-                poet: "杜甫",
-                title: "登岳阳楼",
-                content: "昔闻洞庭水，今上岳阳楼。\n吴楚东南坼，乾坤日夜浮。\n亲朋无一字，老病有孤舟。\n戎马关山北，凭轩涕泗流。"
-            },
-            {
-                name: "庐山",
-                lat: 29.56,
-                lng: 115.97,
-                poet: "苏轼",
-                title: "题西林壁",
-                content: "横看成岭侧成峰，远近高低各不同。\n不识庐山真面目，只缘身在此山中。"
-            },
-            {
-                name: "黄鹤楼",
-                lat: 30.55,
-                lng: 114.30,
-                poet: "崔颢",
-                title: "黄鹤楼",
-                content: "昔人已乘黄鹤去，此地空余黄鹤楼。\n黄鹤一去不复返，白云千载空悠悠。\n晴川历历汉阳树，芳草萋萋鹦鹉洲。\n日暮乡关何处是？烟波江上使人愁。"
-            },
-            {
-                name: "长安",
-                lat: 34.26,
-                lng: 108.94,
-                poet: "王维",
-                title: "送元二使安西",
-                content: "渭城朝雨浥轻尘，客舍青青柳色新。\n劝君更尽一杯酒，西出阳关无故人。"
+        var activeStyle = {
+            fillColor: '#e8d8c0',
+            fillOpacity: 1
+        };
+
+        var poemsByCity = {
+            "重庆市": [
+                { poet: "李白", title: "早发白帝城", content: "朝辞白帝彩云间，千里江陵一日还。\n两岸猿声啼不住，轻舟已过万重山。" }
+            ],
+            "岳阳市": [
+                { poet: "杜甫", title: "登岳阳楼", content: "昔闻洞庭水，今上岳阳楼。\n吴楚东南坼，乾坤日夜浮。\n亲朋无一字，老病有孤舟。\n戎马关山北，凭轩涕泗流。" },
+                { poet: "范仲淹", title: "岳阳楼记（节选）", content: "予观夫巴陵胜状，在洞庭一湖。\n衔远山，吞长江，\n浩浩汤汤，横无际涯。\n朝晖夕阴，气象万千。" }
+            ],
+            "九江市": [
+                { poet: "苏轼", title: "题西林壁", content: "横看成岭侧成峰，远近高低各不同。\n不识庐山真面目，只缘身在此山中。" },
+                { poet: "李白", title: "望庐山瀑布", content: "日照香炉生紫烟，遥看瀑布挂前川。\n飞流直下三千尺，疑是银河落九天。" }
+            ],
+            "武汉市": [
+                { poet: "崔颢", title: "黄鹤楼", content: "昔人已乘黄鹤去，此地空余黄鹤楼。\n黄鹤一去不复返，白云千载空悠悠。\n晴川历历汉阳树，芳草萋萋鹦鹉洲。\n日暮乡关何处是？烟波江上使人愁。" },
+                { poet: "李白", title: "黄鹤楼送孟浩然之广陵", content: "故人西辞黄鹤楼，烟花三月下扬州。\n孤帆远影碧空尽，唯见长江天际流。" }
+            ],
+            "西安市": [
+                { poet: "王维", title: "送元二使安西", content: "渭城朝雨浥轻尘，客舍青青柳色新。\n劝君更尽一杯酒，西出阳关无故人。" }
+            ]
+        };
+
+        var activeLayer = null;
+        var activeLayerStyle = null;
+
+        function closePanel() {
+            document.getElementById('poem-panel').classList.remove('open');
+            if (activeLayer) {
+                activeLayer.setStyle(activeLayerStyle);
+                activeLayer = null;
             }
-        ];
+        }
+
+        function showPoemList(cityName, poems) {
+            var panel = document.getElementById('poem-panel');
+            var title = document.getElementById('panel-title');
+            var body = document.getElementById('panel-body');
+            var backBtn = document.getElementById('panel-back-btn');
+
+            title.textContent = cityName;
+            backBtn.innerHTML = '';
+
+            var html = '<div class="poem-count">共 ' + poems.length + ' 首</div><div class="poem-list">';
+            poems.forEach(function(poem, i) {
+                html += '<div class="poem-list-item" onclick="showPoemDetail(\'' + cityName + '\',' + i + ')">'
+                    + '<div class="poem-title">《' + poem.title + '》</div>'
+                    + '<div class="poem-poet">' + poem.poet + '</div>'
+                    + '</div>';
+            });
+            html += '</div>';
+            body.innerHTML = html;
+            panel.classList.add('open');
+        }
+
+        function showPoemDetail(cityName, index) {
+            var poems = poemsByCity[cityName];
+            var poem = poems[index];
+            var title = document.getElementById('panel-title');
+            var body = document.getElementById('panel-body');
+            var backBtn = document.getElementById('panel-back-btn');
+
+            title.textContent = '';
+            backBtn.innerHTML = '<button class="panel-back" onclick="showPoemList(\'' + cityName + '\', poemsByCity[\'' + cityName + '\'])">← 返回列表</button>';
+
+            body.innerHTML = '<div class="poem-detail">'
+                + '<div class="detail-title">《' + poem.title + '》</div>'
+                + '<div class="detail-poet">' + poem.poet + '</div>'
+                + '<div class="detail-content">' + poem.content + '</div>'
+                + '</div>';
+        }
 
         var noExpand = [
             110000, 120000, 310000, 500000,
@@ -207,18 +375,34 @@
         };
 
         function bindCityEvents(layer, style) {
-            if (layer.feature && layer.feature.properties.name) {
-                layer.bindTooltip(layer.feature.properties.name, {
+            var name = layer.feature && layer.feature.properties.name;
+            if (name) {
+                layer.bindTooltip(name, {
                     className: 'city-tooltip',
                     direction: 'center',
                     sticky: false
                 });
             }
             layer.on('mouseover', function() {
-                layer.setStyle(highlightStyle);
+                if (activeLayer !== layer) {
+                    layer.setStyle(highlightStyle);
+                }
             });
             layer.on('mouseout', function() {
-                layer.setStyle(style);
+                if (activeLayer !== layer) {
+                    layer.setStyle(style);
+                }
+            });
+            layer.on('click', function() {
+                if (name && poemsByCity[name]) {
+                    if (activeLayer && activeLayer !== layer) {
+                        activeLayer.setStyle(activeLayerStyle);
+                    }
+                    activeLayer = layer;
+                    activeLayerStyle = style;
+                    layer.setStyle(activeStyle);
+                    showPoemList(name, poemsByCity[name]);
+                }
             });
         }
 
