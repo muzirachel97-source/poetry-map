@@ -49,6 +49,53 @@
             maxZoom: 18,
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
+
+        var poems = [
+            {
+                name: "白帝城",
+                lat: 31.04,
+                lng: 109.55,
+                poet: "李白",
+                title: "早发白帝城",
+                content: "朝辞白帝彩云间，千里江陵一日还。\n两岸猿声啼不住，轻舟已过万重山。"
+            },
+            {
+                name: "岳阳楼",
+                lat: 29.37,
+                lng: 113.09,
+                poet: "杜甫",
+                title: "登岳阳楼",
+                content: "昔闻洞庭水，今上岳阳楼。\n吴楚东南坼，乾坤日夜浮。\n亲朋无一字，老病有孤舟。\n戎马关山北，凭轩涕泗流。"
+            },
+            {
+                name: "庐山",
+                lat: 29.56,
+                lng: 115.97,
+                poet: "苏轼",
+                title: "题西林壁",
+                content: "横看成岭侧成峰，远近高低各不同。\n不识庐山真面目，只缘身在此山中。"
+            },
+            {
+                name: "黄鹤楼",
+                lat: 30.55,
+                lng: 114.30,
+                poet: "崔颢",
+                title: "黄鹤楼",
+                content: "昔人已乘黄鹤去，此地空余黄鹤楼。\n黄鹤一去不复返，白云千载空悠悠。\n晴川历历汉阳树，芳草萋萋鹦鹉洲。\n日暮乡关何处是？烟波江上使人愁。"
+            },
+            {
+                name: "长安",
+                lat: 34.26,
+                lng: 108.94,
+                poet: "王维",
+                title: "送元二使安西",
+                content: "渭城朝雨浥轻尘，客舍青青柳色新。\n劝君更尽一杯酒，西出阳关无故人。"
+            }
+        ];
+
+        poems.forEach(function(poem) {
+            L.marker([poem.lat, poem.lng]).addTo(map);
+        });
     </script>
 </body>
 </html>
