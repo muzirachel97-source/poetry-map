@@ -74,11 +74,6 @@
             box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
         }
 
-        .poem-marker {
-            background: none !important;
-            border: none !important;
-        }
-
         #loading {
             position: fixed;
             top: 50%;
@@ -144,33 +139,6 @@
             fillColor: '#f0e6d3',
             fillOpacity: 1
         };
-
-        var brushSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="50" viewBox="0 0 22 50">'
-            + '<defs>'
-            + '<linearGradient id="bh" x1="0" y1="0" x2="1" y2="1">'
-            + '<stop offset="0%" stop-color="#dcc488"/>'
-            + '<stop offset="100%" stop-color="#9b7a30"/>'
-            + '</linearGradient>'
-            + '<radialGradient id="bt" cx="45%" cy="35%" r="60%">'
-            + '<stop offset="0%" stop-color="#4a3525" stop-opacity="0.95"/>'
-            + '<stop offset="70%" stop-color="#1a0e08" stop-opacity="0.85"/>'
-            + '<stop offset="100%" stop-color="#0a0504" stop-opacity="0.5"/>'
-            + '</radialGradient>'
-            + '</defs>'
-            + '<rect x="8" y="0" width="6" height="22" rx="3" fill="url(#bh)" opacity="0.82"/>'
-            + '<line x1="8.5" y1="7" x2="13.5" y2="7" stroke="#b89848" stroke-width="0.4" opacity="0.35"/>'
-            + '<line x1="8.5" y1="14" x2="13.5" y2="14" stroke="#b89848" stroke-width="0.4" opacity="0.35"/>'
-            + '<ellipse cx="11" cy="22" rx="5" ry="2.2" fill="#7a6248" opacity="0.6"/>'
-            + '<path d="M11 21 C8 27 3.5 35 4 40 C4.5 44 7 47.5 11 50 C15 47.5 17.5 44 18 40 C18.5 35 14 27 11 21Z" fill="url(#bt)"/>'
-            + '<path d="M11 24 C9 28 6 34 6 38 C6 40 7.5 43 10 46" stroke="rgba(255,255,255,0.08)" stroke-width="1.2" fill="none"/>'
-            + '</svg>';
-
-        var brushIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(brushSvg);
-        var brushIcon = L.icon({
-            iconUrl: brushIconUrl,
-            iconSize: [22, 50],
-            iconAnchor: [11, 50]
-        });
 
         var poems = [
             {
@@ -298,8 +266,10 @@
 
                 result.provinceData.features.forEach(function(f) {
                     if (typeof f.properties.adcode !== 'number') return;
-                    var layer = L.geoJSON(f);
-                    var center = layer.getBounds().getCenter();
+                    var p = f.properties;
+                    var pt = p.centroid || p.center;
+                    if (!pt) return;
+                    var center = L.latLng(pt[1], pt[0]);
                     L.marker(center, {
                         icon: L.divIcon({
                             className: 'province-label',
@@ -311,9 +281,7 @@
                     }).addTo(map);
                 });
 
-                poems.forEach(function(poem) {
-                    L.marker([poem.lat, poem.lng], { icon: brushIcon }).addTo(map);
-                });
+            });
             });
     </script>
 </body>
