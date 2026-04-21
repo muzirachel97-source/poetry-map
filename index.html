@@ -130,7 +130,7 @@
 
         var provinceStyle = {
             color: '#6b5540',
-            weight: 3,
+            weight: 1.5,
             fill: false,
             pane: 'provincePane'
         };
@@ -188,6 +188,58 @@
             710000, 810000, 820000
         ];
 
+        function bindCityEvents(layer, style) {
+            if (layer.feature && layer.feature.properties.name) {
+                layer.bindTooltip(layer.feature.properties.name, {
+                    className: 'city-tooltip',
+                    direction: 'center',
+                    sticky: false
+                });
+            }
+            layer.on('mouseover', function() {
+                layer.setStyle(highlightStyle);
+            });
+            layer.on('mouseout', function() {
+                layer.setStyle(style);
+            });
+        }
+
+        function renderMap(provinceData, cityResults, wholeFeatures) {
+            document.getElementById('loading').style.display = 'none';
+
+            wholeFeatures.forEach(function(feature) {
+                L.geoJSON({ type: 'FeatureCollection', features: [feature] }, {
+                    style: wholeRegionStyle,
+                    onEachFeature: function(f, layer) { bindCityEvents(layer, wholeRegionStyle); }
+                }).addTo(map);
+            });
+
+            cityResults.forEach(function(data) {
+                if (!data) return;
+                L.geoJSON(data, {
+                    style: cityStyle,
+                    onEachFeature: function(f, layer) { bindCityEvents(layer, cityStyle); }
+                }).addTo(map);
+            });
+
+            L.geoJSON(provinceData, { style: provinceStyle }).addTo(map);
+
+            provinceData.features.forEach(function(f) {
+                if (typeof f.properties.adcode !== 'number') return;
+                var pt = f.properties.centroid || f.properties.center;
+                if (!pt) return;
+                L.marker(L.latLng(pt[1], pt[0]), {
+                    icon: L.divIcon({
+                        className: 'province-label',
+                        html: '<span class="province-label-scroll">' + f.properties.name + '</span>',
+                        iconSize: null
+                    }),
+                    interactive: false,
+                    pane: 'labelPane'
+                }).addTo(map);
+            });
+        }
+
         fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
             .then(function(r) { return r.json(); })
             .then(function(provinceData) {
@@ -205,83 +257,17 @@
 
                 return Promise.all(expandCodes.map(function(code) {
                     return fetch('https://geo.datav.aliyun.com/areas_v3/bound/' + code + '_full.json')
-                        .then(function(r) { return r.json(); })
+                        .then(function(r) {
+                            if (!r.ok) return null;
+                            return r.json();
+                        })
                         .catch(function() { return null; });
                 })).then(function(cityResults) {
-                    return {
-                        provinceData: provinceData,
-                        cityResults: cityResults,
-                        wholeFeatures: wholeFeatures
-                    };
+                    renderMap(provinceData, cityResults, wholeFeatures);
                 });
             })
-            .then(function(result) {
-                document.getElementById('loading').style.display = 'none';
-
-                result.wholeFeatures.forEach(function(feature) {
-                    var geojson = { type: 'FeatureCollection', features: [feature] };
-                    L.geoJSON(geojson, {
-                        style: wholeRegionStyle,
-                        onEachFeature: function(feature, layer) {
-                            if (feature.properties.name) {
-                                layer.bindTooltip(feature.properties.name, {
-                                    className: 'city-tooltip',
-                                    direction: 'center',
-                                    sticky: false
-                                });
-                            }
-                            layer.on('mouseover', function() {
-                                layer.setStyle(highlightStyle);
-                            });
-                            layer.on('mouseout', function() {
-                                layer.setStyle(wholeRegionStyle);
-                            });
-                        }
-                    }).addTo(map);
-                });
-
-                result.cityResults.forEach(function(data) {
-                    if (!data) return;
-                    L.geoJSON(data, {
-                        style: cityStyle,
-                        onEachFeature: function(feature, layer) {
-                            if (feature.properties.name) {
-                                layer.bindTooltip(feature.properties.name, {
-                                    className: 'city-tooltip',
-                                    direction: 'center',
-                                    sticky: false
-                                });
-                            }
-                            layer.on('mouseover', function() {
-                                layer.setStyle(highlightStyle);
-                            });
-                            layer.on('mouseout', function() {
-                                layer.setStyle(cityStyle);
-                            });
-                        }
-                    }).addTo(map);
-                });
-
-                L.geoJSON(result.provinceData, { style: provinceStyle }).addTo(map);
-
-                result.provinceData.features.forEach(function(f) {
-                    if (typeof f.properties.adcode !== 'number') return;
-                    var p = f.properties;
-                    var pt = p.centroid || p.center;
-                    if (!pt) return;
-                    var center = L.latLng(pt[1], pt[0]);
-                    L.marker(center, {
-                        icon: L.divIcon({
-                            className: 'province-label',
-                            html: '<span class="province-label-scroll">' + f.properties.name + '</span>',
-                            iconSize: null
-                        }),
-                        interactive: false,
-                        pane: 'labelPane'
-                    }).addTo(map);
-                });
-
-            });
+            .catch(function(err) {
+                document.getElementById('loading').textContent = '地图加载失败，请刷新重试';
             });
     </script>
 </body>
