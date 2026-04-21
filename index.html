@@ -141,23 +141,63 @@
             }
         ];
 
+        var noExpand = [
+            110000, 120000, 310000, 500000,
+            710000, 810000, 820000
+        ];
+
         fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
             .then(function(r) { return r.json(); })
             .then(function(provinceData) {
-                var adcodes = provinceData.features.map(function(f) {
-                    return f.properties.adcode;
+                var expandCodes = [];
+                var wholeFeatures = [];
+
+                provinceData.features.forEach(function(f) {
+                    var code = f.properties.adcode;
+                    if (typeof code === 'number' && noExpand.indexOf(code) === -1) {
+                        expandCodes.push(code);
+                    } else if (typeof code === 'number') {
+                        wholeFeatures.push(f);
+                    }
                 });
 
-                return Promise.all(adcodes.map(function(code) {
+                return Promise.all(expandCodes.map(function(code) {
                     return fetch('https://geo.datav.aliyun.com/areas_v3/bound/' + code + '_full.json')
                         .then(function(r) { return r.json(); })
                         .catch(function() { return null; });
                 })).then(function(cityResults) {
-                    return { provinceData: provinceData, cityResults: cityResults };
+                    return {
+                        provinceData: provinceData,
+                        cityResults: cityResults,
+                        wholeFeatures: wholeFeatures
+                    };
                 });
             })
             .then(function(result) {
                 document.getElementById('loading').style.display = 'none';
+
+                result.wholeFeatures.forEach(function(feature) {
+                    var geojson = { type: 'FeatureCollection', features: [feature] };
+                    L.geoJSON(geojson, {
+                        style: cityStyle,
+                        onEachFeature: function(feature, layer) {
+                            if (feature.properties.name) {
+                                layer.bindTooltip(feature.properties.name, {
+                                    className: 'city-tooltip',
+                                    direction: 'center',
+                                    sticky: false
+                                });
+                            }
+                            layer.on('mouseover', function() {
+                                layer.setStyle(highlightStyle);
+                                layer.bringToFront();
+                            });
+                            layer.on('mouseout', function() {
+                                layer.setStyle(cityStyle);
+                            });
+                        }
+                    }).addTo(map);
+                });
 
                 result.cityResults.forEach(function(data) {
                     if (!data) return;
