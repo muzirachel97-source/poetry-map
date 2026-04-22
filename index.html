@@ -15,8 +15,9 @@
 
         body {
             font-family: "KaiTi", "STKaiti", "楷体", serif;
-            background-color: #edf1ee;
-            color: #283830;
+            background-color: #f0e6d3;
+            background-image: url('4.png');
+            color: #3a2a1a;
         }
 
         #header {
@@ -53,7 +54,7 @@
         }
 
         .leaflet-container {
-            background-color: #e8ede9;
+            background-color: #e8dfd0;
         }
 
         #map-decor {
@@ -111,12 +112,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 1.2rem;
-            color: #2a5040;
+            color: #3a2a1a;
             z-index: 1000;
-            background: rgba(240, 246, 242, 0.95);
+            background: rgba(240, 230, 211, 0.95);
             padding: 20px 40px;
-            border-radius: 8px;
-            border: 1px solid rgba(90, 143, 114, 0.4);
+            border-radius: 4px;
+            border: 1px solid rgba(80, 60, 40, 0.2);
         }
 
         #poem-panel {
@@ -395,13 +396,13 @@
 
         #fog-overlay {
             position: fixed;
-            top: 100px;
+            top: 0;
             left: 0;
             width: 100%;
-            height: calc(100vh - 100px);
+            height: 100vh;
             pointer-events: none;
             z-index: 398;
-            background: radial-gradient(ellipse at center, transparent 40%, rgba(232, 237, 233, 0.35) 100%);
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(240, 230, 211, 0.3) 100%);
         }
 
         .province-label-scroll {
