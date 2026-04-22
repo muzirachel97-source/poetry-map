@@ -587,45 +587,45 @@
         map.getPane('labelPane').style.zIndex = 460;
 
         function poemColor(count) {
-            if (!count) return '#edf1ee';
-            if (count <= 2) return '#d8e3dc';
-            if (count <= 5) return '#b0ccba';
-            if (count <= 10) return '#85ad94';
-            if (count <= 20) return '#5a8f72';
-            if (count <= 50) return '#3a7055';
-            return '#1e4d38';
+            if (!count) return '#e8dfd0';
+            if (count <= 2) return '#d0ddd3';
+            if (count <= 5) return '#a8c5b0';
+            if (count <= 10) return '#7baa8e';
+            if (count <= 20) return '#4e8d6d';
+            if (count <= 50) return '#2d6e4e';
+            return '#1a5438';
         }
 
         var cityStyle = {
-            color: 'rgba(90, 143, 114, 0.3)',
+            color: 'rgba(80, 60, 40, 0.2)',
             weight: 0.5,
-            fillColor: '#edf1ee',
+            fillColor: '#e8dfd0',
             fillOpacity: 1,
             pane: 'cityPane'
         };
 
         var wholeRegionStyle = {
-            color: 'rgba(90, 143, 114, 0.3)',
+            color: 'rgba(80, 60, 40, 0.2)',
             weight: 0,
-            fillColor: '#edf1ee',
+            fillColor: '#e8dfd0',
             fillOpacity: 1,
             pane: 'cityPane'
         };
 
         var provinceStyle = {
-            color: 'rgba(58, 112, 85, 0.6)',
+            color: 'rgba(80, 60, 40, 0.25)',
             weight: 1,
             fill: false,
             pane: 'provincePane'
         };
 
         var highlightStyle = {
-            fillColor: '#dce8e1',
+            fillColor: '#ddd5c8',
             fillOpacity: 1
         };
 
         var activeStyle = {
-            fillColor: '#c8e0d3',
+            fillColor: '#d0c8b8',
             fillOpacity: 1
         };
 
@@ -661,7 +661,7 @@
                 var name = item.name;
                 var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                 var s = {
-                    color: 'rgba(90, 143, 114, 0.3)',
+                    color: 'rgba(80, 60, 40, 0.2)',
                     weight: 0.5,
                     fillColor: poemColor(count),
                     fillOpacity: 1,
@@ -831,7 +831,7 @@
                         var name = feature.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         return {
-                            color: 'rgba(90, 143, 114, 0.4)',
+                            color: 'rgba(80, 60, 40, 0.2)',
                             weight: 0.5,
                             fillColor: poemColor(count),
                             fillOpacity: 1,
@@ -842,7 +842,7 @@
                         var name = f.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         var s = {
-                            color: 'rgba(90, 143, 114, 0.4)',
+                            color: 'rgba(80, 60, 40, 0.2)',
                             weight: 0.5,
                             fillColor: poemColor(count),
                             fillOpacity: 1,
