@@ -15,7 +15,7 @@
 
         body {
             font-family: "KaiTi", "STKaiti", "楷体", serif;
-            background-color: #f0e6d3;
+            background-color: #e5d8be;
             background-image: url('4.png');
             color: #3a2a1a;
         }
@@ -33,7 +33,7 @@
             letter-spacing: 8px;
             font-weight: 700;
             color: #3a2a1a;
-            text-shadow: 1px 1px 2px rgba(240, 230, 211, 0.8);
+            text-shadow: 1px 1px 2px rgba(229, 216, 190, 0.8);
         }
 
         .header-subtitle {
@@ -55,7 +55,7 @@
         }
 
         .leaflet-container {
-            background-color: #e8dfd0;
+            background-color: #ddd4b8;
         }
 
         .leaflet-interactive:focus {
@@ -75,7 +75,7 @@
             font-size: 15px;
             color: #3a2a1a;
             padding: 2px 10px;
-            background: rgba(240, 230, 211, 0.6);
+            background: rgba(229, 216, 190, 0.6);
             border-radius: 2px;
         }
 
@@ -83,7 +83,7 @@
             font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif;
             font-size: 16px;
             color: #3a2a1a;
-            background: rgba(240, 230, 211, 0.94);
+            background: rgba(229, 216, 190, 0.94);
             border: 1px solid rgba(80, 60, 40, 0.15);
             border-left: 3px solid rgba(180, 58, 48, 0.5);
             border-radius: 2px;
@@ -99,7 +99,7 @@
             font-size: 1.2rem;
             color: #3a2a1a;
             z-index: 1000;
-            background: rgba(240, 230, 211, 0.95);
+            background: rgba(229, 216, 190, 0.95);
             padding: 20px 40px;
             border-radius: 4px;
             border: 1px solid rgba(80, 60, 40, 0.2);
@@ -112,7 +112,7 @@
             width: 420px;
             height: 100vh;
             max-height: 100vh;
-            background-color: rgba(240, 230, 211, 0.98);
+            background-color: rgba(229, 216, 190, 0.98);
             background-image: url('4.png');
             border-left: 1px solid rgba(80, 60, 40, 0.2);
             box-shadow: -4px 0 20px rgba(58, 42, 26, 0.1);
@@ -253,7 +253,7 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(240, 230, 211, 0.9);
+            background: rgba(229, 216, 190, 0.9);
             background-image: url('4.png');
             border: 1px solid rgba(80, 60, 40, 0.2);
             border-radius: 3px;
@@ -285,7 +285,7 @@
             letter-spacing: 2px;
             padding: 4px 14px;
             border: 1px solid rgba(80, 60, 40, 0.25);
-            background: rgba(240, 230, 211, 0.7);
+            background: rgba(229, 216, 190, 0.7);
             color: rgba(58, 42, 26, 0.5);
             cursor: pointer;
             transition: all 0.2s;
@@ -306,7 +306,7 @@
         }
 
         .mode-btn:hover:not(.active) {
-            background: rgba(240, 230, 211, 0.9);
+            background: rgba(229, 216, 190, 0.9);
             color: #3a2a1a;
         }
 
@@ -329,7 +329,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 300px;
+            height: 55vw;
             background: url('1.png') center bottom / 100% auto no-repeat;
             pointer-events: none;
             z-index: 399;
@@ -365,7 +365,7 @@
             height: 100vh;
             pointer-events: none;
             z-index: 398;
-            background: radial-gradient(ellipse at center, transparent 40%, rgba(240, 230, 211, 0.3) 100%);
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(229, 216, 190, 0.3) 100%);
         }
 
 
@@ -421,7 +421,7 @@
 
     <div id="legend">
         <h4 id="legend-title">诗词数量</h4>
-        <div class="legend-row"><span class="legend-color" style="background:#e8dfd0"></span> 0</div>
+        <div class="legend-row"><span class="legend-color" style="background:#ddd4b8"></span> 0</div>
         <div class="legend-row"><span class="legend-color" style="background:#d0ddd3"></span> 1-2</div>
         <div class="legend-row"><span class="legend-color" style="background:#a8c5b0"></span> 3-5</div>
         <div class="legend-row"><span class="legend-color" style="background:#7baa8e"></span> 6-10</div>
@@ -457,7 +457,7 @@
         map.getPane('labelPane').style.zIndex = 460;
 
         function poemColor(count) {
-            if (!count) return '#e8dfd0';
+            if (!count) return '#ddd4b8';
             if (count <= 2) return '#d0ddd3';
             if (count <= 5) return '#a8c5b0';
             if (count <= 10) return '#7baa8e';
@@ -469,7 +469,7 @@
         var cityStyle = {
             color: 'rgba(80, 60, 40, 0.2)',
             weight: 0.5,
-            fillColor: '#e8dfd0',
+            fillColor: '#ddd4b8',
             fillOpacity: 1,
             pane: 'cityPane'
         };
@@ -477,7 +477,7 @@
         var wholeRegionStyle = {
             color: 'rgba(80, 60, 40, 0.2)',
             weight: 0,
-            fillColor: '#e8dfd0',
+            fillColor: '#ddd4b8',
             fillOpacity: 1,
             pane: 'cityPane'
         };
@@ -741,7 +741,7 @@
                 L.marker(center, {
                     icon: L.divIcon({
                         className: 'province-label',
-                        html: '<span class="province-label-scroll">' + f.properties.name + '</span>',
+                        html: '<span class="province-label-scroll">' + f.properties.name.replace(/(壮族|回族|维吾尔)?自治区|特别行政区|省|市/g, '') + '</span>',
                         iconSize: null
                     }),
                     interactive: false,
