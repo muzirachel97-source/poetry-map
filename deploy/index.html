@@ -15,56 +15,47 @@
 
         body {
             font-family: "KaiTi", "STKaiti", "楷体", serif;
-            background-color: #edf1ee;
-            color: #283830;
+            background-color: #f0e6d3;
+            background-image: url('4.png');
+            color: #3a2a1a;
         }
 
         #header {
-            text-align: center;
-            padding: 24px 16px 18px;
-            background: linear-gradient(135deg, #1e4d38 0%, #2a6548 50%, #1e4d38 100%);
-            color: #e8f0ec;
-            position: relative;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 500;
+            pointer-events: auto;
         }
 
         #header h1 {
-            font-size: 1.6rem;
-            letter-spacing: 12px;
-            font-weight: 400;
+            font-size: 2rem;
+            letter-spacing: 8px;
+            font-weight: 700;
+            color: #3a2a1a;
+            text-shadow: 1px 1px 2px rgba(240, 230, 211, 0.8);
         }
 
         .header-subtitle {
-            font-size: 0.8rem;
-            letter-spacing: 6px;
-            opacity: 0.6;
-            margin-top: 6px;
-            font-weight: 300;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            color: rgba(58, 42, 26, 0.55);
+            margin-top: 4px;
         }
 
         .header-seal {
             position: absolute;
-            right: 24px;
-            bottom: 16px;
+            top: 2px;
+            right: -44px;
         }
 
         #map {
             width: 100%;
-            height: calc(100vh - 100px);
+            height: 100vh;
         }
 
         .leaflet-container {
-            background-color: #e8ede9;
-        }
-
-        #map-decor {
-            position: fixed;
-            top: 100px;
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 100px);
-            pointer-events: none;
-            z-index: 399;
-            overflow: hidden;
+            background-color: #e8dfd0;
         }
 
         .leaflet-interactive:focus {
@@ -80,29 +71,24 @@
         .province-label-scroll {
             display: inline-block;
             position: relative;
-            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif;
             font-size: 15px;
-            color: #2a5040;
-            padding: 3px 14px;
-            background: linear-gradient(180deg,
-                rgba(232, 240, 236, 0.75) 0%,
-                rgba(240, 246, 242, 0.8) 50%,
-                rgba(232, 240, 236, 0.75) 100%);
-            border-left: 3px solid rgba(90, 143, 114, 0.35);
-            border-right: 3px solid rgba(90, 143, 114, 0.35);
-            border-radius: 3px;
-            box-shadow: 0 1px 4px rgba(30, 77, 56, 0.08);
+            color: #3a2a1a;
+            padding: 2px 10px;
+            background: rgba(240, 230, 211, 0.6);
+            border-radius: 2px;
         }
 
         .city-tooltip {
-            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif;
             font-size: 16px;
-            color: #1e4d38;
-            background: rgba(237, 241, 238, 0.94);
-            border: 1px solid rgba(90, 143, 114, 0.4);
-            border-radius: 4px;
+            color: #3a2a1a;
+            background: rgba(240, 230, 211, 0.94);
+            border: 1px solid rgba(80, 60, 40, 0.15);
+            border-left: 3px solid rgba(180, 58, 48, 0.5);
+            border-radius: 2px;
             padding: 4px 10px;
-            box-shadow: 2px 2px 8px rgba(30, 77, 56, 0.08);
+            box-shadow: 2px 2px 8px rgba(58, 42, 26, 0.08);
         }
 
         #loading {
@@ -111,25 +97,25 @@
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 1.2rem;
-            color: #2a5040;
+            color: #3a2a1a;
             z-index: 1000;
-            background: rgba(240, 246, 242, 0.95);
+            background: rgba(240, 230, 211, 0.95);
             padding: 20px 40px;
-            border-radius: 8px;
-            border: 1px solid rgba(90, 143, 114, 0.4);
+            border-radius: 4px;
+            border: 1px solid rgba(80, 60, 40, 0.2);
         }
 
         #poem-panel {
             position: fixed;
             right: -460px;
-            top: 100px;
+            top: 0;
             width: 420px;
-            max-height: calc(100vh - 120px);
-            background: linear-gradient(180deg,
-                rgba(240, 244, 241, 0.98) 0%,
-                rgba(233, 240, 236, 0.98) 100%);
-            border-left: 4px solid rgba(58, 112, 85, 0.4);
-            box-shadow: -4px 0 20px rgba(30, 77, 56, 0.1);
+            height: 100vh;
+            max-height: 100vh;
+            background-color: rgba(240, 230, 211, 0.98);
+            background-image: url('4.png');
+            border-left: 1px solid rgba(80, 60, 40, 0.2);
+            box-shadow: -4px 0 20px rgba(58, 42, 26, 0.1);
             z-index: 1000;
             overflow-y: auto;
             transition: right 0.4s ease-out;
@@ -141,8 +127,8 @@
         }
 
         .panel-header {
-            padding: 20px 24px 12px;
-            border-bottom: 1px solid rgba(90, 143, 114, 0.25);
+            padding: 24px 24px 14px;
+            border-bottom: 1px solid rgba(80, 60, 40, 0.15);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -150,7 +136,7 @@
 
         .panel-header h2 {
             font-size: 1.3rem;
-            color: #1e4d38;
+            color: #3a2a1a;
             letter-spacing: 4px;
         }
 
@@ -160,7 +146,7 @@
             border: none;
             background: none;
             font-size: 1.2rem;
-            color: #5a8f72;
+            color: rgba(58, 42, 26, 0.4);
             cursor: pointer;
             border-radius: 50%;
             display: flex;
@@ -169,22 +155,22 @@
         }
 
         .panel-close:hover {
-            background: rgba(90, 143, 114, 0.15);
-            color: #1e4d38;
+            background: rgba(80, 60, 40, 0.08);
+            color: #3a2a1a;
         }
 
         .panel-back {
             border: none;
             background: none;
             font-size: 0.95rem;
-            color: #5a8f72;
+            color: rgba(58, 42, 26, 0.5);
             cursor: pointer;
             padding: 4px 8px;
             font-family: "KaiTi", "STKaiti", "楷体", serif;
         }
 
         .panel-back:hover {
-            color: #1e4d38;
+            color: #3a2a1a;
         }
 
         .poem-list {
@@ -193,72 +179,73 @@
 
         .poem-list-item {
             padding: 14px 18px;
-            margin: 6px 14px;
+            margin: 0 14px;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.45);
-            border-radius: 6px;
+            background: transparent;
+            border-bottom: 1px solid rgba(80, 60, 40, 0.08);
+            border-radius: 0;
             transition: all 0.25s ease;
         }
 
         .poem-list-item:hover {
-            background: rgba(255, 255, 255, 0.7);
-            transform: translateX(-2px);
-            box-shadow: 2px 0 8px rgba(30, 77, 56, 0.06);
+            background: rgba(180, 58, 48, 0.04);
+            transform: none;
+            box-shadow: none;
         }
 
         .poem-list-item .poem-title {
             font-size: 1.1rem;
-            color: #1e4d38;
+            color: #3a2a1a;
         }
 
         .poem-list-item .poem-poet {
             font-size: 0.9rem;
-            color: #5a8f72;
+            color: rgba(58, 42, 26, 0.5);
             margin-top: 4px;
         }
 
         .poem-detail {
-            padding: 20px 24px 32px;
+            padding: 28px 28px 40px;
             position: relative;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath d='M20 80 Q40 60 60 80 Q80 100 100 80 Q120 60 140 80' fill='none' stroke='%233a7858' stroke-width='0.8' opacity='0.1'/%3E%3Cpath d='M60 140 Q80 120 100 140 Q120 160 140 140 Q160 120 180 140' fill='none' stroke='%233a7858' stroke-width='0.7' opacity='0.08'/%3E%3Ccircle cx='160' cy='40' r='8' fill='none' stroke='%233a7858' stroke-width='0.6' opacity='0.09'/%3E%3Ccircle cx='160' cy='40' r='3' fill='none' stroke='%233a7858' stroke-width='0.5' opacity='0.07'/%3E%3C/svg%3E");
+            background-image: none;
         }
 
         .poem-detail .detail-title {
-            font-size: 1.4rem;
-            color: #1e4d38;
+            font-size: 1.5rem;
+            color: #3a2a1a;
             text-align: center;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
         }
 
         .poem-detail .detail-poet {
             font-size: 1rem;
-            color: #5a8f72;
+            color: rgba(58, 42, 26, 0.55);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .poem-detail .detail-preface {
             font-size: 0.9rem;
-            color: #6a8a78;
+            color: rgba(58, 42, 26, 0.5);
             line-height: 1.9;
             text-align: center;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px dashed rgba(90, 143, 114, 0.3);
+            border-bottom: 1px dashed rgba(80, 60, 40, 0.15);
         }
 
         .poem-detail .detail-content {
-            font-size: 1.15rem;
-            color: #2a3a30;
-            line-height: 2.2;
+            font-size: 1.2rem;
+            color: #3a2a1a;
+            line-height: 2.4;
             text-align: center;
             white-space: pre-line;
         }
 
         .poem-count {
             font-size: 0.85rem;
-            color: #65a082;
+            color: rgba(58, 42, 26, 0.5);
             padding: 0 24px 4px;
         }
 
@@ -266,38 +253,40 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(240, 244, 241, 0.9);
-            border: 1px solid rgba(90, 143, 114, 0.25);
-            border-radius: 6px;
-            padding: 8px 12px;
+            background: rgba(240, 230, 211, 0.9);
+            background-image: url('4.png');
+            border: 1px solid rgba(80, 60, 40, 0.2);
+            border-radius: 3px;
+            padding: 10px 14px;
             z-index: 1000;
             font-size: 0.75rem;
-            color: #2a4b3e;
-            box-shadow: 1px 1px 6px rgba(30, 77, 56, 0.06);
-            opacity: 0.85;
+            color: #3a2a1a;
+            box-shadow: 1px 1px 6px rgba(58, 42, 26, 0.06);
         }
 
         #legend h4 {
-            margin-bottom: 4px;
-            font-size: 0.78rem;
-            letter-spacing: 2px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            color: #3a2a1a;
+            border-bottom: 1px solid rgba(80, 60, 40, 0.15);
+            padding-bottom: 4px;
         }
 
         .mode-toggle {
             display: flex;
             gap: 0;
-            margin-top: 8px;
-            justify-content: center;
+            margin-top: 12px;
         }
 
         .mode-btn {
             font-family: "KaiTi", "STKaiti", "楷体", serif;
             font-size: 0.85rem;
             letter-spacing: 2px;
-            padding: 4px 16px;
-            border: 1px solid rgba(232, 240, 236, 0.5);
-            background: rgba(255, 255, 255, 0.12);
-            color: rgba(232, 240, 236, 0.7);
+            padding: 4px 14px;
+            border: 1px solid rgba(80, 60, 40, 0.25);
+            background: rgba(240, 230, 211, 0.7);
+            color: rgba(58, 42, 26, 0.5);
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -311,14 +300,14 @@
         }
 
         .mode-btn.active {
-            background: rgba(232, 240, 236, 0.2);
-            color: #e8f0ec;
-            border-color: rgba(232, 240, 236, 0.6);
+            background: rgba(180, 58, 48, 0.12);
+            color: #3a2a1a;
+            border-color: rgba(180, 58, 48, 0.3);
         }
 
         .mode-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.08);
-            color: rgba(232, 240, 236, 0.85);
+            background: rgba(240, 230, 211, 0.9);
+            color: #3a2a1a;
         }
 
         .legend-row {
@@ -331,88 +320,54 @@
         .legend-color {
             width: 20px;
             height: 12px;
-            border: 1px solid rgba(90, 143, 114, 0.4);
-            border-radius: 2px;
+            border: 1px solid rgba(80, 60, 40, 0.25);
+            border-radius: 1px;
             flex-shrink: 0;
         }
-        @keyframes flySwallow {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(-29vw, 14vh); }
-            50% { transform: translate(-57vw, 18vh); }
-            75% { transform: translate(-86vw, 34vh); }
-            100% { transform: translate(-115vw, 42vh); }
-        }
-
-        @keyframes sway {
-            0%, 100% { transform: rotate(-1.5deg); }
-            50% { transform: rotate(2.5deg); }
-        }
-
-        .swallow {
-            position: absolute;
+        #decor-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: url('1.png') center bottom / 100% auto no-repeat;
             pointer-events: none;
-            animation: flySwallow linear infinite;
+            z-index: 399;
         }
 
-        .swallow-1 {
-            top: 6%;
-            right: -50px;
-            width: 42px;
-            height: 26px;
-            opacity: 0.3;
-            animation-duration: 18s;
+        #decor-left {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 300px;
+            height: 900px;
+            background: url('2.png') left bottom / contain no-repeat;
+            pointer-events: none;
+            z-index: 399;
         }
 
-        .swallow-2 {
-            top: 18%;
-            right: -80px;
-            width: 34px;
-            height: 22px;
-            opacity: 0.25;
-            animation-duration: 23s;
-            animation-delay: 7s;
-        }
-
-        .swallow-3 {
-            top: 3%;
-            right: -35px;
-            width: 28px;
-            height: 18px;
-            opacity: 0.2;
-            animation-duration: 28s;
-            animation-delay: 14s;
-        }
-
-        .willow-group {
-            position: absolute;
+        #decor-right-top {
+            position: fixed;
             top: 0;
-            left: 8px;
-            width: 140px;
-            height: 340px;
-            transform-origin: 50% 0;
-            animation: sway 5s ease-in-out infinite;
+            right: 0;
+            width: 400px;
+            height: 300px;
+            background: url('3.png') right top / contain no-repeat;
+            pointer-events: none;
+            z-index: 399;
         }
 
         #fog-overlay {
             position: fixed;
-            top: 100px;
+            top: 0;
             left: 0;
             width: 100%;
-            height: calc(100vh - 100px);
+            height: 100vh;
             pointer-events: none;
             z-index: 398;
-            background:
-                radial-gradient(ellipse at center, transparent 35%, rgba(232, 237, 233, 0.4) 100%),
-                linear-gradient(180deg, rgba(232, 237, 233, 0.2) 0%, transparent 18%, transparent 75%, rgba(232, 237, 233, 0.15) 100%);
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(240, 230, 211, 0.3) 100%);
         }
 
-        .province-label-scroll {
-            font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif !important;
-        }
-
-        .city-tooltip {
-            font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif !important;
-        }
 
         .dynasty-seal {
             display: inline-block;
@@ -424,34 +379,6 @@
             top: -1px;
         }
 
-        .poem-pillar-wrap {
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .poem-pillar {
-            width: 6px;
-            border-radius: 3px 3px 1px 1px;
-            transition: all 0.3s ease;
-        }
-
-        .poem-pillar-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-top: -1px;
-            transition: all 0.3s ease;
-        }
-
-        .pillar-glow .poem-pillar {
-            transform: scaleX(1.6) scaleY(1.12);
-        }
-
-        .pillar-glow .poem-pillar-dot {
-            transform: scale(1.8);
-        }
     </style>
 </head>
 <body>
@@ -487,109 +414,20 @@
             </mask>
         </defs>
     </svg>
-    <div id="map-decor">
-        <!-- 底部连绵山峦（铺满整个底边，水墨风） -->
-        <svg style="position:absolute;bottom:0;left:0;width:100%;height:220px;" viewBox="0 0 1440 220" preserveAspectRatio="none">
-            <defs>
-                <linearGradient id="mg1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#3a7055" stop-opacity="0.12"/>
-                    <stop offset="55%" stop-color="#3a7055" stop-opacity="0.06"/>
-                    <stop offset="100%" stop-color="#3a7055" stop-opacity="0.01"/>
-                </linearGradient>
-                <linearGradient id="mg2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#2a5040" stop-opacity="0.22"/>
-                    <stop offset="45%" stop-color="#3a7055" stop-opacity="0.12"/>
-                    <stop offset="100%" stop-color="#5a8f72" stop-opacity="0.02"/>
-                </linearGradient>
-                <linearGradient id="mg3" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#5a8f72" stop-opacity="0.1"/>
-                    <stop offset="100%" stop-color="#8aba9c" stop-opacity="0.01"/>
-                </linearGradient>
-            </defs>
-            <!-- 远山（渐变雾化） -->
-            <path d="M0 220 L0 150 Q45 132 90 98 Q110 78 130 108 Q170 142 240 155 Q280 142 310 100 Q325 60 340 65 Q362 75 400 115 Q445 150 500 158 Q558 150 600 118 Q622 86 635 76 Q648 70 662 88 Q692 110 732 130 Q756 122 778 102 Q792 86 802 92 Q822 108 870 138 Q922 158 982 158 Q1022 150 1060 110 Q1082 76 1098 56 Q1108 48 1118 62 Q1138 82 1182 120 Q1222 145 1272 150 Q1302 142 1328 112 Q1342 96 1352 95 Q1368 100 1402 128 Q1422 140 1440 148 L1440 220 Z"
-                  fill="url(#mg1)"/>
-            <!-- 中景山（渐变雾化+轮廓） -->
-            <path d="M0 220 L0 168 Q52 156 102 142 Q142 124 172 108 Q188 98 198 104 Q222 120 282 150 Q342 160 402 150 Q432 142 462 118 Q482 96 498 84 Q508 76 515 82 Q532 98 582 128 Q622 148 682 155 Q722 150 752 134 Q778 118 792 104 Q802 96 812 100 Q828 112 872 138 Q922 155 972 160 Q1012 156 1042 142 Q1062 128 1082 112 Q1095 100 1104 105 Q1122 118 1172 142 Q1222 158 1282 152 Q1312 146 1342 128 Q1362 114 1378 108 Q1388 104 1398 110 Q1412 120 1440 135 L1440 220 Z"
-                  fill="url(#mg2)"/>
-            <path d="M0 168 Q52 156 102 142 Q142 124 172 108 Q188 98 198 104 Q222 120 282 150 Q342 160 402 150 Q432 142 462 118 Q482 96 498 84 Q508 76 515 82 Q532 98 582 128 Q622 148 682 155 Q722 150 752 134 Q778 118 792 104 Q802 96 812 100 Q828 112 872 138 Q922 155 972 160 Q1012 156 1042 142 Q1062 128 1082 112 Q1095 100 1104 105 Q1122 118 1172 142 Q1222 158 1282 152 Q1312 146 1342 128 Q1362 114 1378 108 Q1388 104 1398 110 Q1412 120 1440 135"
-                  fill="none" stroke="#2a5040" stroke-width="1.2" opacity="0.18"/>
-            <!-- 前景近山剪影 -->
-            <path d="M0 220 L0 188 Q32 182 62 176 Q82 168 98 172 Q118 180 158 190 Q198 196 238 192 Q268 186 292 178 Q308 170 318 174 Q338 182 388 194 Q428 198 468 194 Q508 186 538 176 Q552 168 562 170 Q578 176 618 188 Q668 196 718 190 Q748 184 772 174 Q786 166 796 170 Q816 178 866 192 Q916 198 968 194 Q1008 186 1038 176 Q1052 168 1062 172 Q1082 180 1132 192 Q1172 196 1212 190 Q1242 184 1266 174 Q1278 168 1288 172 Q1308 180 1358 192 Q1398 196 1440 190 L1440 220 Z"
-                  fill="#2a5040" opacity="0.22"/>
-            <!-- 前景雾霭 -->
-            <path d="M0 220 L0 196 Q125 182 245 190 Q365 198 485 186 Q605 174 725 182 Q845 194 965 180 Q1085 168 1205 178 Q1325 190 1440 180 L1440 220 Z"
-                  fill="url(#mg3)"/>
-        </svg>
-
-        <!-- 飞燕（人字形简笔画） -->
-        <svg class="swallow swallow-1" viewBox="0 0 36 20">
-            <path d="M0 0 Q8 6 18 10 Q8 14 0 20" fill="none" stroke="#2a5040" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <svg class="swallow swallow-2" viewBox="0 0 36 20">
-            <path d="M0 0 Q8 6 18 10 Q8 14 0 20" fill="none" stroke="#2a5040" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <svg class="swallow swallow-3" viewBox="0 0 36 20">
-            <path d="M0 0 Q8 6 18 10 Q8 14 0 20" fill="none" stroke="#2a5040" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-
-        <!-- 左上角垂柳（带摇曳动画） -->
-        <svg class="willow-group" viewBox="0 0 140 340">
-            <!-- 树干 -->
-            <path d="M70 0 Q72 20 68 42 Q65 55 68 68" fill="none" stroke="#3a7055" stroke-width="3.5" opacity="0.28" stroke-linecap="round"/>
-            <!-- 主枝条+叶片 -->
-            <g opacity="0.22">
-                <path d="M68 36 Q55 70 48 115 Q42 160 46 210 Q50 245 42 285" fill="none" stroke="#3a7055" stroke-width="1.8"/>
-                <path d="M52 90 Q48 94 44 92" fill="none" stroke="#3a7055" stroke-width="1" opacity="0.7"/>
-                <path d="M46 130 Q42 134 38 132" fill="none" stroke="#3a7055" stroke-width="0.9" opacity="0.6"/>
-                <path d="M44 170 Q40 175 36 172" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.55"/>
-                <path d="M46 210 Q42 215 38 212" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.5"/>
-                <path d="M44 250 Q40 255 36 252" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.45"/>
-            </g>
-            <g opacity="0.2">
-                <path d="M72 32 Q82 68 86 115 Q90 165 84 215 Q78 255 82 295" fill="none" stroke="#3a7055" stroke-width="1.6"/>
-                <path d="M84 85 Q88 89 92 87" fill="none" stroke="#3a7055" stroke-width="1" opacity="0.7"/>
-                <path d="M88 125 Q92 129 96 127" fill="none" stroke="#3a7055" stroke-width="0.9" opacity="0.6"/>
-                <path d="M86 170 Q90 175 94 172" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.55"/>
-                <path d="M84 215 Q88 220 92 217" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
-            </g>
-            <g opacity="0.18">
-                <path d="M65 42 Q48 78 40 120 Q32 168 38 215 Q44 248 36 280" fill="none" stroke="#3a7055" stroke-width="1.4"/>
-                <path d="M44 100 Q40 104 36 101" fill="none" stroke="#3a7055" stroke-width="0.9" opacity="0.6"/>
-                <path d="M36 145 Q32 149 28 146" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.55"/>
-                <path d="M38 190 Q34 195 30 192" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
-                <path d="M36 240 Q32 244 28 241" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.45"/>
-            </g>
-            <g opacity="0.16">
-                <path d="M75 48 Q92 85 98 130 Q104 175 96 220 Q88 255 94 290" fill="none" stroke="#3a7055" stroke-width="1.3"/>
-                <path d="M96 105 Q100 109 104 106" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.6"/>
-                <path d="M100 150 Q104 155 108 152" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.55"/>
-                <path d="M96 200 Q100 205 104 202" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
-            </g>
-            <g opacity="0.14">
-                <path d="M66 28 Q50 58 42 95 Q34 138 40 180 Q46 210 38 245" fill="none" stroke="#3a7055" stroke-width="1.2"/>
-                <path d="M46 80 Q42 84 38 81" fill="none" stroke="#3a7055" stroke-width="0.8" opacity="0.6"/>
-                <path d="M38 125 Q34 129 30 126" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.55"/>
-                <path d="M40 170 Q36 174 32 171" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
-            </g>
-            <g opacity="0.12">
-                <path d="M78 52 Q96 90 102 135 Q108 175 100 210 Q92 238 98 265" fill="none" stroke="#3a7055" stroke-width="1.1"/>
-                <path d="M100 115 Q104 119 108 116" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.55"/>
-                <path d="M102 160 Q106 165 110 162" fill="none" stroke="#3a7055" stroke-width="0.7" opacity="0.5"/>
-            </g>
-        </svg>
-    </div>
+    <div id="decor-bottom"></div>
+    <div id="decor-left"></div>
+    <div id="decor-right-top"></div>
     <div id="loading">地图加载中...</div>
 
     <div id="legend">
         <h4 id="legend-title">诗词数量</h4>
-        <div class="legend-row"><span class="legend-color" style="background:#edf1ee"></span> 0</div>
-        <div class="legend-row"><span class="legend-color" style="background:#d8e3dc"></span> 1-2</div>
-        <div class="legend-row"><span class="legend-color" style="background:#b0ccba"></span> 3-5</div>
-        <div class="legend-row"><span class="legend-color" style="background:#85ad94"></span> 6-10</div>
-        <div class="legend-row"><span class="legend-color" style="background:#5a8f72"></span> 11-20</div>
-        <div class="legend-row"><span class="legend-color" style="background:#3a7055"></span> 21-50</div>
-        <div class="legend-row"><span class="legend-color" style="background:#1e4d38"></span> 50+</div>
+        <div class="legend-row"><span class="legend-color" style="background:#e8dfd0"></span> 0</div>
+        <div class="legend-row"><span class="legend-color" style="background:#d0ddd3"></span> 1-2</div>
+        <div class="legend-row"><span class="legend-color" style="background:#a8c5b0"></span> 3-5</div>
+        <div class="legend-row"><span class="legend-color" style="background:#7baa8e"></span> 6-10</div>
+        <div class="legend-row"><span class="legend-color" style="background:#4e8d6d"></span> 11-20</div>
+        <div class="legend-row"><span class="legend-color" style="background:#2d6e4e"></span> 21-50</div>
+        <div class="legend-row"><span class="legend-color" style="background:#1a5438"></span> 50+</div>
     </div>
 
     <div id="poem-panel">
@@ -615,101 +453,51 @@
         map.createPane('provincePane');
         map.getPane('provincePane').style.zIndex = 450;
 
-        map.createPane('pillarPane');
-        map.getPane('pillarPane').style.zIndex = 410;
-
         map.createPane('labelPane');
         map.getPane('labelPane').style.zIndex = 460;
 
         function poemColor(count) {
-            if (!count) return '#edf1ee';
-            if (count <= 2) return '#d8e3dc';
-            if (count <= 5) return '#b0ccba';
-            if (count <= 10) return '#85ad94';
-            if (count <= 20) return '#5a8f72';
-            if (count <= 50) return '#3a7055';
-            return '#1e4d38';
+            if (!count) return '#e8dfd0';
+            if (count <= 2) return '#d0ddd3';
+            if (count <= 5) return '#a8c5b0';
+            if (count <= 10) return '#7baa8e';
+            if (count <= 20) return '#4e8d6d';
+            if (count <= 50) return '#2d6e4e';
+            return '#1a5438';
         }
 
         var cityStyle = {
-            color: 'rgba(90, 143, 114, 0.3)',
+            color: 'rgba(80, 60, 40, 0.2)',
             weight: 0.5,
-            fillColor: '#edf1ee',
+            fillColor: '#e8dfd0',
             fillOpacity: 1,
             pane: 'cityPane'
         };
 
         var wholeRegionStyle = {
-            color: 'rgba(90, 143, 114, 0.3)',
+            color: 'rgba(80, 60, 40, 0.2)',
             weight: 0,
-            fillColor: '#edf1ee',
+            fillColor: '#e8dfd0',
             fillOpacity: 1,
             pane: 'cityPane'
         };
 
         var provinceStyle = {
-            color: 'rgba(58, 112, 85, 0.6)',
+            color: 'rgba(80, 60, 40, 0.25)',
             weight: 1,
             fill: false,
             pane: 'provincePane'
         };
 
         var highlightStyle = {
-            fillColor: '#dce8e1',
+            fillColor: '#ddd5c8',
             fillOpacity: 1
         };
 
         var activeStyle = {
-            fillColor: '#c8e0d3',
+            fillColor: '#d0c8b8',
             fillOpacity: 1
         };
-
-        function pillarHeight(count) {
-            if (!count) return 0;
-            if (count <= 2) return 16;
-            if (count <= 5) return 24;
-            if (count <= 10) return 32;
-            if (count <= 20) return 42;
-            if (count <= 50) return 54;
-            return 68;
-        }
-
-        var pillarMarkers = [];
-        var pillarMap = {};
-
-        function clearPillars() {
-            pillarMarkers.forEach(function(m) { map.removeLayer(m); });
-            pillarMarkers = [];
-            pillarMap = {};
-        }
-
-        function createPillars() {
-            cityLayers.forEach(function(item) {
-                var name = item.name;
-                var count = poemsByCity[name] ? poemsByCity[name].length : 0;
-                if (!count) return;
-                var h = pillarHeight(count);
-                var color = poemColor(count);
-                var center = item.layer.getBounds().getCenter();
-                var marker = L.marker(center, {
-                    icon: L.divIcon({
-                        className: '',
-                        html: '<div class="poem-pillar-wrap" id="pillar-' + name + '">'
-                            + '<div class="poem-pillar" style="height:' + h + 'px;'
-                            + 'background:linear-gradient(to top,' + color + ',' + color + '88,' + color + '22,transparent);'
-                            + 'box-shadow:0 0 8px ' + color + '88;"></div>'
-                            + '<div class="poem-pillar-dot" style="background:' + color + ';box-shadow:0 0 6px ' + color + ';"></div>'
-                            + '</div>',
-                        iconSize: [6, h + 8],
-                        iconAnchor: [3, h + 8]
-                    }),
-                    interactive: false,
-                    pane: 'pillarPane'
-                }).addTo(map);
-                pillarMarkers.push(marker);
-                pillarMap[name] = 'pillar-' + name;
-            });
-        }
 
         var poemsByCity = allByCity;
         var currentMode = 'all';
@@ -743,7 +531,7 @@
                 var name = item.name;
                 var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                 var s = {
-                    color: 'rgba(90, 143, 114, 0.3)',
+                    color: 'rgba(80, 60, 40, 0.2)',
                     weight: 0.5,
                     fillColor: poemColor(count),
                     fillOpacity: 1,
@@ -752,9 +540,6 @@
                 item.layer.setStyle(s);
                 item.style = s;
             });
-
-            clearPillars();
-            createPillars();
 
             closePanel();
         }
@@ -869,19 +654,10 @@
                         var prevItem = findCityItem(hoveredLayer);
                         hoveredLayer.setStyle(prevItem ? prevItem.style : style);
                     }
-                    var prevName = hoveredLayer.feature && hoveredLayer.feature.properties.name;
-                    if (prevName && pillarMap[prevName]) {
-                        var prevEl = document.getElementById(pillarMap[prevName]);
-                        if (prevEl) prevEl.classList.remove('pillar-glow');
-                    }
                 }
                 hoveredLayer = layer;
                 if (activeLayer !== layer) {
                     layer.setStyle(highlightStyle);
-                }
-                if (name && pillarMap[name]) {
-                    var el = document.getElementById(pillarMap[name]);
-                    if (el) el.classList.add('pillar-glow');
                 }
             });
             layer.on('mouseout', function() {
@@ -891,10 +667,6 @@
                 if (activeLayer !== layer) {
                     var item = findCityItem(layer);
                     layer.setStyle(item ? item.style : style);
-                }
-                if (name && pillarMap[name]) {
-                    var el = document.getElementById(pillarMap[name]);
-                    if (el) el.classList.remove('pillar-glow');
                 }
             });
             layer.on('click', function() {
@@ -929,7 +701,7 @@
                         var name = feature.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         return {
-                            color: 'rgba(90, 143, 114, 0.4)',
+                            color: 'rgba(80, 60, 40, 0.2)',
                             weight: 0.5,
                             fillColor: poemColor(count),
                             fillOpacity: 1,
@@ -940,7 +712,7 @@
                         var name = f.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         var s = {
-                            color: 'rgba(90, 143, 114, 0.4)',
+                            color: 'rgba(80, 60, 40, 0.2)',
                             weight: 0.5,
                             fillColor: poemColor(count),
                             fillOpacity: 1,
@@ -977,10 +749,9 @@
                 }).addTo(map);
             });
 
-            createPillars();
         }
 
-        fetch('geo/100000_full.json')
+        fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
             .then(function(r) { return r.json(); })
             .then(function(provinceData) {
                 var expandCodes = [];
@@ -996,7 +767,7 @@
                 });
 
                 return Promise.all(expandCodes.map(function(code) {
-                    return fetch('geo/' + code + '_full.json')
+                    return fetch('https://geo.datav.aliyun.com/areas_v3/bound/' + code + '_full.json')
                         .then(function(r) {
                             if (!r.ok) return null;
                             return r.json();
