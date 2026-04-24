@@ -22,6 +22,7 @@
             --green-4: #64856e;
             --green-5: #466553;
             --map-empty: #ddd2bb;
+            --paper-grain: none;
         }
 
         * {
@@ -112,6 +113,15 @@
             filter: sepia(0.12) saturate(0.92) contrast(0.96);
         }
 
+        #map::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 999;
+            background: var(--paper-grain);
+        }
+
         .leaflet-container {
             background-color: transparent;
         }
@@ -130,7 +140,7 @@
             transform: translate(-50%, -50%);
             font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif;
             font-size: 17px;
-            color: rgba(63, 58, 50, 0.4);
+            color: rgba(63, 58, 50, 0.62);
             letter-spacing: 0.12em;
         }
 
@@ -168,9 +178,25 @@
             width: 390px;
             height: 100vh;
             max-height: 100vh;
-            background-color: var(--paper-mid);
-            border-left: none;
-            box-shadow: -2px 0 12px rgba(0, 0, 0, 0.04);
+            background:
+                var(--paper-grain),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(160, 140, 100, 0.035) 0px,
+                    transparent 1px,
+                    transparent 3px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(155, 135, 95, 0.025) 0px,
+                    transparent 1px,
+                    transparent 4px
+                ),
+                radial-gradient(ellipse at 30% 40%, rgba(200, 180, 140, 0.12), transparent 70%),
+                radial-gradient(ellipse at 70% 75%, rgba(195, 172, 130, 0.08), transparent 55%),
+                linear-gradient(180deg, #ede0c8, #e8d9c0, #e3d4ba);
+            border-left: 1px solid rgba(120, 100, 70, 0.06);
+            box-shadow: -3px 0 18px rgba(0, 0, 0, 0.03);
             z-index: 1000;
             overflow-y: auto;
             transition: right 0.4s ease-out;
@@ -187,7 +213,7 @@
 
         .panel-header {
             padding: 28px 20px 16px;
-            border-bottom: 1px solid rgba(120, 100, 70, 0.1);
+            border-bottom: 1px solid rgba(120, 100, 70, 0.06);
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -240,46 +266,89 @@
         }
 
         .poem-card {
-            background: var(--paper-light);
-            margin: 0 16px 16px;
-            padding: 18px 20px;
-            border-radius: 4px;
-            border: 1px solid rgba(120, 100, 70, 0.10);
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            background: var(--paper-grain), rgba(244, 235, 216, 0.72);
+            margin: 0 16px 20px;
+            padding: 26px 28px;
+            border: none;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.025);
             cursor: pointer;
             position: relative;
-            transition: box-shadow 0.25s ease;
+            transition: background 0.25s ease;
+        }
+
+        .poem-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) 12px 8px / calc(100% - 24px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) 12px calc(100% - 8px) / calc(100% - 24px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) 8px 12px / 1px calc(100% - 24px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) calc(100% - 8px) 12px / 1px calc(100% - 24px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) 12px 8px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) 8px 12px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) calc(100% - 12px) 8px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) calc(100% - 8px) 12px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) 12px calc(100% - 8px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) 8px calc(100% - 12px) / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) calc(100% - 12px) calc(100% - 8px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.13), rgba(120,100,70,0.13)) calc(100% - 8px) calc(100% - 12px) / 5px 1px no-repeat;
+        }
+
+        .poem-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) 5px 1px / calc(100% - 10px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) 5px calc(100% - 1px) / calc(100% - 10px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) 1px 5px / 1px calc(100% - 10px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) calc(100% - 1px) 5px / 1px calc(100% - 10px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) 5px 1px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) 1px 5px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) calc(100% - 5px) 1px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) calc(100% - 1px) 5px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) 5px calc(100% - 1px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) 1px calc(100% - 5px) / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) calc(100% - 5px) calc(100% - 1px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.18), rgba(120,100,70,0.18)) calc(100% - 1px) calc(100% - 5px) / 5px 1px no-repeat;
         }
 
         .poem-card:hover {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            background: var(--paper-grain), rgba(244, 235, 216, 0.88);
         }
 
         .poem-card .card-title {
-            font-family: "FangSong", "仿宋", "SimSun", "宋体", serif;
-            font-size: 1.2rem;
-            color: #2f2c24;
-            margin-bottom: 6px;
-            padding-right: 28px;
+            font-family: "KaiTi", "STKaiti", "FangSong", "仿宋", serif;
+            font-size: 1.22rem;
+            font-weight: 400;
+            color: #3f3a32;
+            letter-spacing: 0.06em;
+            margin-bottom: 8px;
+            padding-right: 26px;
         }
 
         .poem-card .card-author {
-            font-size: 0.85rem;
-            color: var(--ink-soft);
-            margin-bottom: 10px;
+            font-size: 0.82rem;
+            color: #8d866f;
+            margin-bottom: 14px;
         }
 
         .poem-card .card-excerpt {
             font-family: "FangSong", "仿宋", "KaiTi", "STKaiti", serif;
-            font-size: 0.92rem;
-            color: #4f4a3f;
-            line-height: 1.9;
+            font-size: 1.06rem;
+            color: #5b5548;
+            line-height: 2.1;
+            white-space: pre-line;
         }
 
         .poem-card .card-seal {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 16px;
+            right: 16px;
+            z-index: 1;
         }
 
         .poem-detail {
@@ -325,20 +394,40 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: var(--paper-light);
-            border: none;
-            border-radius: 3px;
-            padding: 10px 14px;
+            background: var(--paper-grain), linear-gradient(180deg, #e4d5b4, #ddd0ab);
+            border: 1px solid rgba(120, 100, 70, 0.15);
+            border-radius: 1px;
+            padding: 14px 18px;
             z-index: 1000;
-            font-family: "FangSong", "仿宋", "SimSun", "宋体", serif;
-            font-size: 0.78rem;
+            font-family: "KaiTi", "STKaiti", "楷体", "FangSong", "仿宋", serif;
+            font-size: 0.82rem;
             color: #4c463b;
             box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
         }
 
+        #legend::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px 5px / calc(100% - 18px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px calc(100% - 5px) / calc(100% - 18px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 5px 9px / 1px calc(100% - 18px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 5px) 9px / 1px calc(100% - 18px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px 5px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 5px 9px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 9px) 5px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 5px) 9px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px calc(100% - 5px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 5px calc(100% - 9px) / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 9px) calc(100% - 5px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 5px) calc(100% - 9px) / 5px 1px no-repeat;
+        }
+
         #legend h4 {
             margin-bottom: 6px;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             letter-spacing: 3px;
             color: #4c463b;
             border-bottom: 1px solid rgba(120, 100, 70, 0.12);
@@ -350,6 +439,11 @@
             align-items: center;
             gap: 6px;
             margin: 3px 0;
+            letter-spacing: 0.08em;
+            font-family: "Palatino Linotype", "Book Antiqua", "Georgia", "FangSong", "仿宋", serif;
+            font-style: italic;
+            font-size: 0.8rem;
+            color: #5c5546;
         }
 
         .legend-color {
@@ -414,13 +508,13 @@
 
     <div id="legend">
         <h4 id="legend-title">诗词数量</h4>
-        <div class="legend-row"><span class="legend-color" style="background:transparent;border-style:dashed;"></span> 0</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(197,214,196,0.55)"></span> 1-2</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(165,191,166,0.55)"></span> 3-5</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(142,172,145,0.55)"></span> 6-10</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(100,133,110,0.55)"></span> 11-20</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(70,101,83,0.55)"></span> 21-50</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(53,80,64,0.55)"></span> 50+</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(221,210,187,0.45)"></span> 0</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(205,220,204,0.82)"></span> 1-2</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(179,202,180,0.82)"></span> 3-5</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(150,180,154,0.82)"></span> 6-10</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(111,146,120,0.82)"></span> 11-20</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(79,114,96,0.82)"></span> 21-50</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(59,92,74,0.82)"></span> 50+</div>
     </div>
 
     <div id="poem-panel">
@@ -434,6 +528,30 @@
 
     <script src="poems_data.js"></script>
     <script>
+        (function() {
+            var c = document.createElement('canvas');
+            c.width = 150; c.height = 150;
+            var ctx = c.getContext('2d');
+            for (var y = 0; y < 150; y += 3) {
+                for (var x = 0; x < 150; x += 3) {
+                    var v = Math.random() * 55 + 110;
+                    var a = (Math.random() * 0.14 + 0.02) * 0.8;
+                    ctx.fillStyle = 'rgba(' + Math.floor(v + 12) + ',' + Math.floor(v + 3) + ',' + Math.floor(v - 18) + ',' + a + ')';
+                    ctx.fillRect(x, y, 3, 3);
+                }
+            }
+            for (var i = 0; i < 28; i++) {
+                var fx = Math.random() * 145;
+                var fy = Math.random() * 145;
+                var fw = Math.random() * 4 + 2;
+                var fh = Math.random() * 2 + 1;
+                var fv = Math.random() * 40 + 100;
+                ctx.fillStyle = 'rgba(' + Math.floor(fv + 10) + ',' + Math.floor(fv) + ',' + Math.floor(fv - 20) + ',' + (Math.random() * 0.1 + 0.04) * 0.8 + ')';
+                ctx.fillRect(fx, fy, fw, fh);
+            }
+            document.documentElement.style.setProperty('--paper-grain', 'url(' + c.toDataURL() + ')');
+        })();
+
         var map = L.map('map', {
             zoomControl: false,
             minZoom: 4,
@@ -454,12 +572,12 @@
 
         function poemColor(count) {
             if (!count) return '#ddd2bb';
-            if (count <= 2) return '#c5d6c4';
-            if (count <= 5) return '#a5bfa6';
-            if (count <= 10) return '#8eac91';
-            if (count <= 20) return '#64856e';
-            if (count <= 50) return '#466553';
-            return '#355040';
+            if (count <= 2) return '#cddccc';
+            if (count <= 5) return '#b3cab4';
+            if (count <= 10) return '#96b49a';
+            if (count <= 20) return '#6f9278';
+            if (count <= 50) return '#4f7260';
+            return '#3b5c4a';
         }
 
         var cityStyle = {
@@ -486,12 +604,12 @@
         };
 
         var highlightStyle = {
-            fillColor: 'rgba(100, 133, 110, 0.18)',
+            fillColor: 'rgba(100, 133, 110, 0.25)',
             fillOpacity: 1
         };
 
         var activeStyle = {
-            fillColor: 'rgba(100, 133, 110, 0.28)',
+            fillColor: 'rgba(100, 133, 110, 0.38)',
             fillOpacity: 1
         };
 
@@ -529,8 +647,8 @@
                 var s = {
                     color: 'rgba(88, 78, 56, 0.22)',
                     weight: 0.5,
-                    fillColor: count > 0 ? poemColor(count) : 'transparent',
-                    fillOpacity: count > 0 ? 0.55 : 0,
+                    fillColor: count > 0 ? poemColor(count) : '#ddd2bb',
+                    fillOpacity: count > 0 ? 0.82 : 0.45,
                     pane: 'cityPane'
                 };
                 item.layer.setStyle(s);
@@ -565,8 +683,8 @@
             var html = '<div class="poem-count">共收录 ' + poems.length + ' 首</div><div class="poem-list">';
             poems.forEach(function(poem, i) {
                 var sealMaskId = poem.dynasty === '唐' ? 'seal-tang-mask' : 'seal-song-mask';
-                var sealSvg = '<svg class="card-seal" viewBox="0 0 18 18" width="20" height="20">'
-                    + '<rect width="18" height="18" rx="1" fill="rgba(177, 74, 58, 0.65)" mask="url(#' + sealMaskId + ')"/>'
+                var sealSvg = '<svg class="card-seal" viewBox="0 0 18 18" width="16" height="16">'
+                    + '<rect width="18" height="18" rx="2" fill="rgba(177, 74, 58, 0.55)" mask="url(#' + sealMaskId + ')"/>'
                     + '</svg>';
                 var excerpt = getExcerpt(poem.content, 2);
                 var safeCityName = cityName.replace(/'/g, "\\'");
@@ -688,10 +806,12 @@
             layer.on('click', function() {
                 if (name && poemsByCity[name]) {
                     if (activeLayer && activeLayer !== layer) {
+                        activeLayer.closeTooltip();
                         var prevItem = findCityItem(activeLayer);
                         activeLayer.setStyle(prevItem ? prevItem.style : activeLayerStyle);
                     }
                     activeLayer = layer;
+                    layer.closeTooltip();
                     var curItem = findCityItem(layer);
                     activeLayerStyle = curItem ? curItem.style : style;
                     layer.setStyle(activeStyle);
@@ -705,8 +825,31 @@
 
             wholeFeatures.forEach(function(feature) {
                 L.geoJSON({ type: 'FeatureCollection', features: [feature] }, {
-                    style: wholeRegionStyle,
-                    onEachFeature: function(f, layer) { bindCityEvents(layer, wholeRegionStyle); }
+                    style: function(f) {
+                        var name = f.properties.name;
+                        var count = poemsByCity[name] ? poemsByCity[name].length : 0;
+                        return {
+                            color: 'rgba(88, 78, 56, 0.22)',
+                            weight: 0.5,
+                            fillColor: count > 0 ? poemColor(count) : '#ddd2bb',
+                            fillOpacity: count > 0 ? 0.82 : 0.45,
+                            pane: 'cityPane'
+                        };
+                    },
+                    onEachFeature: function(f, layer) {
+                        var name = f.properties.name;
+                        var count = poemsByCity[name] ? poemsByCity[name].length : 0;
+                        var s = {
+                            color: 'rgba(88, 78, 56, 0.22)',
+                            weight: 0.5,
+                            fillColor: count > 0 ? poemColor(count) : '#ddd2bb',
+                            fillOpacity: count > 0 ? 0.82 : 0.45,
+                            pane: 'cityPane'
+                        };
+                        var item = { name: name, layer: layer, style: s };
+                        cityLayers.push(item);
+                        bindCityEvents(layer, s);
+                    }
                 }).addTo(map);
             });
 
@@ -719,8 +862,8 @@
                         return {
                             color: 'rgba(88, 78, 56, 0.22)',
                             weight: 0.5,
-                            fillColor: count > 0 ? poemColor(count) : 'transparent',
-                            fillOpacity: count > 0 ? 0.55 : 0,
+                            fillColor: count > 0 ? poemColor(count) : '#ddd2bb',
+                            fillOpacity: count > 0 ? 0.82 : 0.45,
                             pane: 'cityPane'
                         };
                     },
@@ -730,8 +873,8 @@
                         var s = {
                             color: 'rgba(88, 78, 56, 0.22)',
                             weight: 0.5,
-                            fillColor: count > 0 ? poemColor(count) : 'transparent',
-                            fillOpacity: count > 0 ? 0.55 : 0,
+                            fillColor: count > 0 ? poemColor(count) : '#ddd2bb',
+                            fillOpacity: count > 0 ? 0.82 : 0.45,
                             pane: 'cityPane'
                         };
                         var item = { name: name, layer: layer, style: s };
