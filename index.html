@@ -1055,6 +1055,7 @@
             var btn = document.getElementById('bgm-btn');
             if (audio.paused) {
                 audio.volume = 0.3;
+                if (audio.currentTime < 4) audio.currentTime = 4;
                 audio.play();
                 btn.classList.add('playing');
                 btn.textContent = '乐';
@@ -1073,6 +1074,7 @@
                 var audio = document.getElementById('bgm');
                 var btn = document.getElementById('bgm-btn');
                 audio.volume = 0.3;
+                audio.currentTime = 4;
                 audio.play().then(function() {
                     btn.classList.add('playing');
                     btn.textContent = '乐';
