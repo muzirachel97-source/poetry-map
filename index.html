@@ -638,10 +638,11 @@
             document.documentElement.style.setProperty('--paper-grain', 'url(' + c.toDataURL() + ')');
         })();
 
-        (function() {
+        function drawTitle() {
             var tc = document.getElementById('title-canvas');
             if (!tc) return;
             var ctx = tc.getContext('2d');
+            ctx.clearRect(0, 0, tc.width, tc.height);
             var text = '诗词地图';
             var charW = 82;
             var baseSize = 62;
@@ -685,7 +686,9 @@
                 ctx.globalAlpha = 1.0;
                 ctx.restore();
             }
-        })();
+        }
+        drawTitle();
+        document.fonts.ready.then(function() { drawTitle(); });
 
         (function() {
             var seal = document.getElementById('header-seal');
