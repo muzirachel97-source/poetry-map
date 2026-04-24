@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>诗词地图</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
@@ -15,47 +16,92 @@
 
         body {
             font-family: "KaiTi", "STKaiti", "楷体", serif;
-            background-color: #e5d8be;
-            background-image: url('4.png');
+            background: #e5d8be url('全2.png') center center / cover no-repeat fixed;
             color: #3a2a1a;
         }
 
         #header {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 12vh;
+            left: 6vw;
             z-index: 500;
             pointer-events: auto;
         }
 
         #header h1 {
-            font-size: 2rem;
-            letter-spacing: 8px;
-            font-weight: 700;
-            color: #3a2a1a;
-            text-shadow: 1px 1px 2px rgba(229, 216, 190, 0.8);
-        }
-
-        .header-subtitle {
-            font-size: 0.85rem;
-            letter-spacing: 4px;
-            color: rgba(58, 42, 26, 0.55);
-            margin-top: 4px;
+            font-family: "方正字迹-曾正国行书", "FZZhiJi-ZengZhengGuoXingShuS", "方正清刻本悦宋", "FZQingKeBenYueSongS-R-GB", "Zhi Mang Xing", "STXingkai", "华文行楷", cursive, serif;
+            font-size: 3.2rem;
+            letter-spacing: 0.08em;
+            font-weight: 400;
+            color: #2f3e2f;
+            text-shadow:
+                0 0 10px rgba(47, 62, 47, 0.1),
+                1px 2px 4px rgba(47, 62, 47, 0.06);
+            position: relative;
+            display: inline-block;
         }
 
         .header-seal {
             position: absolute;
-            top: 2px;
-            right: -44px;
+            top: 50%;
+            transform: translateY(-50%);
+            right: -46px;
+        }
+
+        .header-subtitle {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            color: rgba(47, 62, 47, 0.3);
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 0;
+            margin-top: 14px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            font-family: "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.15em;
+            padding: 4px 14px;
+            border: none;
+            background: none;
+            color: rgba(47, 62, 47, 0.35);
+            cursor: pointer;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .mode-btn + .mode-btn::before {
+            content: '·';
+            position: absolute;
+            left: -2px;
+            color: rgba(47, 62, 47, 0.2);
+        }
+
+        .mode-btn.active {
+            color: #2f3e2f;
+            border-bottom: 1.5px solid rgba(47, 62, 47, 0.4);
+            padding-bottom: 2px;
+        }
+
+        .mode-btn:hover:not(.active) {
+            color: rgba(47, 62, 47, 0.6);
         }
 
         #map {
             width: 100%;
             height: 100vh;
+            filter: sepia(0.08) contrast(0.95);
         }
 
         .leaflet-container {
-            background-color: #ddd4b8;
+            background-color: transparent;
         }
 
         .leaflet-interactive:focus {
@@ -72,23 +118,21 @@
             display: inline-block;
             position: relative;
             font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif;
-            font-size: 15px;
-            color: #3a2a1a;
-            padding: 2px 10px;
-            background: rgba(229, 216, 190, 0.6);
-            border-radius: 2px;
+            font-size: 17px;
+            color: rgba(47, 62, 47, 0.5);
+            letter-spacing: 0.12em;
         }
 
         .city-tooltip {
-            font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif;
-            font-size: 16px;
-            color: #3a2a1a;
-            background: rgba(229, 216, 190, 0.94);
-            border: 1px solid rgba(80, 60, 40, 0.15);
-            border-left: 3px solid rgba(180, 58, 48, 0.5);
-            border-radius: 2px;
-            padding: 4px 10px;
-            box-shadow: 2px 2px 8px rgba(58, 42, 26, 0.08);
+            font-family: "KaiTi", "STKaiti", "楷体", "FangSong", "仿宋", serif;
+            font-size: 15px;
+            color: #3a3a3a;
+            line-height: 1.6;
+            background: #f3ead8;
+            border: none;
+            border-radius: 1px;
+            padding: 8px 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         #loading {
@@ -273,43 +317,6 @@
             padding-bottom: 4px;
         }
 
-        .mode-toggle {
-            display: flex;
-            gap: 0;
-            margin-top: 12px;
-        }
-
-        .mode-btn {
-            font-family: "KaiTi", "STKaiti", "楷体", serif;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            padding: 4px 14px;
-            border: 1px solid rgba(80, 60, 40, 0.25);
-            background: rgba(229, 216, 190, 0.7);
-            color: rgba(58, 42, 26, 0.5);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .mode-btn:first-child {
-            border-radius: 4px 0 0 4px;
-        }
-
-        .mode-btn:last-child {
-            border-radius: 0 4px 4px 0;
-        }
-
-        .mode-btn.active {
-            background: rgba(180, 58, 48, 0.12);
-            color: #3a2a1a;
-            border-color: rgba(180, 58, 48, 0.3);
-        }
-
-        .mode-btn:hover:not(.active) {
-            background: rgba(229, 216, 190, 0.9);
-            color: #3a2a1a;
-        }
-
         .legend-row {
             display: flex;
             align-items: center;
@@ -325,25 +332,7 @@
             flex-shrink: 0;
         }
         #decor-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: url('全.png') center center / cover no-repeat;
-            pointer-events: none;
-            z-index: 399;
-        }
-
-        #fog-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 398;
-            background: radial-gradient(ellipse at center, transparent 40%, rgba(229, 216, 190, 0.3) 100%);
+            display: none;
         }
 
 
@@ -361,25 +350,25 @@
 </head>
 <body>
     <div id="header">
-        <h1>诗词地图</h1>
-        <div class="header-subtitle">唐宋诗词 · 山川足迹</div>
+        <h1>诗词地图
+            <svg class="header-seal" viewBox="0 0 30 30" width="30" height="30">
+                <defs>
+                    <mask id="seal-mask">
+                        <rect width="30" height="30" fill="white"/>
+                        <text x="15" y="22" text-anchor="middle" font-size="18" font-family="SimSun, 宋体, serif" font-weight="700" fill="black">诗</text>
+                    </mask>
+                </defs>
+                <rect width="30" height="30" rx="2" fill="rgba(180, 58, 48, 0.65)" mask="url(#seal-mask)"/>
+            </svg>
+        </h1>
+        <div class="header-subtitle">唐宋诗词地理分布</div>
         <div class="mode-toggle">
             <button class="mode-btn" onclick="switchMode('tangshi')">唐诗</button>
             <button class="mode-btn" onclick="switchMode('songci')">宋词</button>
             <button class="mode-btn active" onclick="switchMode('all')">全部</button>
         </div>
-        <svg class="header-seal" viewBox="0 0 34 34" width="34" height="34">
-            <defs>
-                <mask id="seal-mask">
-                    <rect width="34" height="34" fill="white"/>
-                    <text x="17" y="25" text-anchor="middle" font-size="22" font-family="SimSun, 宋体, serif" font-weight="700" fill="black">诗</text>
-                </mask>
-            </defs>
-            <rect width="34" height="34" rx="2" fill="rgba(180, 58, 48, 0.78)" mask="url(#seal-mask)"/>
-        </svg>
     </div>
     <div id="map"></div>
-    <div id="fog-overlay"></div>
     <svg style="position:absolute;width:0;height:0;">
         <defs>
             <mask id="seal-tang-mask">
@@ -397,13 +386,13 @@
 
     <div id="legend">
         <h4 id="legend-title">诗词数量</h4>
-        <div class="legend-row"><span class="legend-color" style="background:#ddd4b8"></span> 0</div>
-        <div class="legend-row"><span class="legend-color" style="background:#d0ddd3"></span> 1-2</div>
-        <div class="legend-row"><span class="legend-color" style="background:#a8c5b0"></span> 3-5</div>
-        <div class="legend-row"><span class="legend-color" style="background:#7baa8e"></span> 6-10</div>
-        <div class="legend-row"><span class="legend-color" style="background:#4e8d6d"></span> 11-20</div>
-        <div class="legend-row"><span class="legend-color" style="background:#2d6e4e"></span> 21-50</div>
-        <div class="legend-row"><span class="legend-color" style="background:#1a5438"></span> 50+</div>
+        <div class="legend-row"><span class="legend-color" style="background:transparent;border-style:dashed;"></span> 0</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(202,214,195,0.5)"></span> 1-2</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(162,191,162,0.5)"></span> 3-5</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(111,168,142,0.5)"></span> 6-10</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(69,142,120,0.5)"></span> 11-20</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(42,114,102,0.5)"></span> 21-50</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(24,90,82,0.5)"></span> 50+</div>
     </div>
 
     <div id="poem-panel">
@@ -418,7 +407,7 @@
     <script src="poems_data.js"></script>
     <script>
         var map = L.map('map', {
-            zoomControl: true,
+            zoomControl: false,
             minZoom: 4,
             maxZoom: 8
         }).setView([33, 105], 5);
@@ -432,46 +421,49 @@
         map.createPane('labelPane');
         map.getPane('labelPane').style.zIndex = 460;
 
+        map.createPane('borderPane');
+        map.getPane('borderPane').style.zIndex = 470;
+
         function poemColor(count) {
             if (!count) return '#ddd4b8';
-            if (count <= 2) return '#d0ddd3';
-            if (count <= 5) return '#a8c5b0';
-            if (count <= 10) return '#7baa8e';
-            if (count <= 20) return '#4e8d6d';
-            if (count <= 50) return '#2d6e4e';
-            return '#1a5438';
+            if (count <= 2) return '#cad6c3';
+            if (count <= 5) return '#a2bfa2';
+            if (count <= 10) return '#6fa88e';
+            if (count <= 20) return '#458e78';
+            if (count <= 50) return '#2a7266';
+            return '#185a52';
         }
 
         var cityStyle = {
-            color: 'rgba(80, 60, 40, 0.2)',
-            weight: 0.5,
-            fillColor: '#ddd4b8',
-            fillOpacity: 1,
+            color: 'rgba(80, 60, 40, 0.08)',
+            weight: 0.3,
+            fillColor: 'transparent',
+            fillOpacity: 0,
             pane: 'cityPane'
         };
 
         var wholeRegionStyle = {
-            color: 'rgba(80, 60, 40, 0.2)',
+            color: 'rgba(80, 60, 40, 0.15)',
             weight: 0,
-            fillColor: '#ddd4b8',
-            fillOpacity: 1,
+            fillColor: 'transparent',
+            fillOpacity: 0,
             pane: 'cityPane'
         };
 
         var provinceStyle = {
-            color: 'rgba(80, 60, 40, 0.25)',
-            weight: 1,
+            color: 'rgba(80, 60, 40, 0.15)',
+            weight: 0.8,
             fill: false,
             pane: 'provincePane'
         };
 
         var highlightStyle = {
-            fillColor: '#ddd5c8',
+            fillColor: 'rgba(180, 58, 48, 0.08)',
             fillOpacity: 1
         };
 
         var activeStyle = {
-            fillColor: '#d0c8b8',
+            fillColor: 'rgba(180, 58, 48, 0.12)',
             fillOpacity: 1
         };
 
@@ -507,10 +499,10 @@
                 var name = item.name;
                 var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                 var s = {
-                    color: 'rgba(80, 60, 40, 0.2)',
-                    weight: 0.5,
-                    fillColor: poemColor(count),
-                    fillOpacity: 1,
+                    color: 'rgba(80, 60, 40, 0.08)',
+                    weight: 0.3,
+                    fillColor: count > 0 ? poemColor(count) : 'transparent',
+                    fillOpacity: count > 0 ? 0.5 : 0,
                     pane: 'cityPane'
                 };
                 item.layer.setStyle(s);
@@ -677,10 +669,10 @@
                         var name = feature.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         return {
-                            color: 'rgba(80, 60, 40, 0.2)',
-                            weight: 0.5,
-                            fillColor: poemColor(count),
-                            fillOpacity: 1,
+                            color: 'rgba(80, 60, 40, 0.08)',
+                            weight: 0.3,
+                            fillColor: count > 0 ? poemColor(count) : 'transparent',
+                            fillOpacity: count > 0 ? 0.5 : 0,
                             pane: 'cityPane'
                         };
                     },
@@ -688,10 +680,10 @@
                         var name = f.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         var s = {
-                            color: 'rgba(80, 60, 40, 0.2)',
-                            weight: 0.5,
-                            fillColor: poemColor(count),
-                            fillOpacity: 1,
+                            color: 'rgba(80, 60, 40, 0.08)',
+                            weight: 0.3,
+                            fillColor: count > 0 ? poemColor(count) : 'transparent',
+                            fillOpacity: count > 0 ? 0.5 : 0,
                             pane: 'cityPane'
                         };
                         var item = { name: name, layer: layer, style: s };
@@ -702,6 +694,19 @@
             });
 
             L.geoJSON(provinceData, { style: provinceStyle }).addTo(map);
+
+            fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000.json')
+                .then(function(r) { return r.json(); })
+                .then(function(borderData) {
+                    L.geoJSON(borderData, {
+                        style: {
+                            color: 'rgba(60, 45, 30, 0.3)',
+                            weight: 1.8,
+                            fill: false,
+                            pane: 'borderPane'
+                        }
+                    }).addTo(map);
+                }).catch(function() {});
 
             provinceData.features.forEach(function(f) {
                 var code = f.properties.adcode;
