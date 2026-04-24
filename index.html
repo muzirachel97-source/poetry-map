@@ -1067,15 +1067,18 @@
         }
 
         (function() {
+            var bgmAudio = document.getElementById('bgm');
+            bgmAudio.addEventListener('timeupdate', function() {
+                if (bgmAudio.currentTime < 4) bgmAudio.currentTime = 4;
+            });
             var started = false;
             function autoPlayBgm() {
                 if (started) return;
                 started = true;
-                var audio = document.getElementById('bgm');
                 var btn = document.getElementById('bgm-btn');
-                audio.volume = 0.3;
-                audio.currentTime = 4;
-                audio.play().then(function() {
+                bgmAudio.volume = 0.3;
+                bgmAudio.currentTime = 4;
+                bgmAudio.play().then(function() {
                     btn.classList.add('playing');
                     btn.textContent = '乐';
                 }).catch(function() { started = false; });
