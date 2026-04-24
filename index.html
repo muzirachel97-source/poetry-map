@@ -504,6 +504,46 @@
             border-radius: 2px;
             flex-shrink: 0;
         }
+        #stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 500;
+            font-family: "FangSong", "仿宋", "KaiTi", "STKaiti", "楷体", serif;
+            font-size: 1.05rem;
+            color: #5a5347;
+            letter-spacing: 2px;
+            line-height: 2;
+            background: var(--paper-grain), linear-gradient(180deg, #e0d0a8, #d8c89e);
+            padding: 14px 20px;
+            border-radius: 1px;
+            box-shadow: 0 1px 6px rgba(60, 50, 30, 0.06);
+        }
+        #stats::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px 5px / calc(100% - 18px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px calc(100% - 5px) / calc(100% - 18px) 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 5px 9px / 1px calc(100% - 18px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 5px) 9px / 1px calc(100% - 18px) no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px 5px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 5px 9px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 9px) 5px / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 5px) 9px / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 9px calc(100% - 5px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) 5px calc(100% - 9px) / 5px 1px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 9px) calc(100% - 5px) / 1px 5px no-repeat,
+                linear-gradient(rgba(120,100,70,0.16), rgba(120,100,70,0.16)) calc(100% - 5px) calc(100% - 9px) / 5px 1px no-repeat;
+        }
+        #stats .stat-num {
+            font-family: "Palatino Linotype", "Book Antiqua", "Georgia", serif;
+            font-style: italic;
+            color: #3e6a4f;
+        }
+
         #decor-overlay {
             display: none;
         }
@@ -559,6 +599,8 @@
         <div class="legend-row"><span class="legend-color" style="background:rgba(84,137,98,0.82)"></span> 21-50</div>
         <div class="legend-row"><span class="legend-color" style="background:rgba(63,121,80,0.82)"></span> 50+</div>
     </div>
+
+    <div id="stats"></div>
 
     <div id="poem-panel">
         <div class="panel-header">
@@ -734,6 +776,17 @@
             fillColor: 'rgba(100, 133, 110, 0.38)',
             fillOpacity: 1
         };
+
+        (function() {
+            var tangCount = 0, songCount = 0, citySet = {};
+            for (var c in tangshiByCity) { tangCount += tangshiByCity[c].length; citySet[c] = 1; }
+            for (var c in songciByCity) { songCount += songciByCity[c].length; citySet[c] = 1; }
+            var cityCount = Object.keys(citySet).length;
+            document.getElementById('stats').innerHTML =
+                '唐诗 <span class="stat-num">' + tangCount + '</span> 首 · '
+                + '宋词 <span class="stat-num">' + songCount + '</span> 首<br>'
+                + '涉及 <span class="stat-num">' + cityCount + '</span> 个地方';
+        })();
 
         var poemsByCity = allByCity;
         var currentMode = 'all';
