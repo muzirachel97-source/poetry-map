@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
+        :root {
+            --paper-bg: #e5d8be;
+            --paper-light: #f3ead8;
+            --paper-mid: #efe4cf;
+            --ink-main: #3f3a32;
+            --ink-soft: #7c745f;
+            --ink-faint: #a9a287;
+            --seal-red: #b14a3a;
+            --green-1: #c5d6c4;
+            --green-2: #a5bfa6;
+            --green-3: #8eac91;
+            --green-4: #64856e;
+            --green-5: #466553;
+            --map-empty: #ddd2bb;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,8 +32,8 @@
 
         body {
             font-family: "KaiTi", "STKaiti", "楷体", serif;
-            background: #e5d8be url('全2.png') center center / cover no-repeat fixed;
-            color: #3a2a1a;
+            background: var(--paper-bg) url('全2.png') center center / cover no-repeat fixed;
+            color: var(--ink-main);
         }
 
         #header {
@@ -29,14 +45,12 @@
         }
 
         #header h1 {
-            font-family: "方正字迹-曾正国行书", "FZZhiJi-ZengZhengGuoXingShuS", "方正清刻本悦宋", "FZQingKeBenYueSongS-R-GB", "Zhi Mang Xing", "STXingkai", "华文行楷", cursive, serif;
-            font-size: 3.2rem;
-            letter-spacing: 0.08em;
+            font-family: "方正字迹-曾正国行书", "FZZhiJi-ZengZhengGuoXingShuS", "方正清刻本悦宋", "FZQingKeBenYueSongS-R-GB", "Zhi Mang Xing", "STKaiti", "KaiTi", "STXingkai", "华文行楷", cursive, serif;
+            font-size: 2.8rem;
+            letter-spacing: 0.1em;
             font-weight: 400;
-            color: #2f3e2f;
-            text-shadow:
-                0 0 10px rgba(47, 62, 47, 0.1),
-                1px 2px 4px rgba(47, 62, 47, 0.06);
+            color: #2d4a3b;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
             position: relative;
             display: inline-block;
         }
@@ -49,29 +63,27 @@
         }
 
         .header-subtitle {
-            font-family: "KaiTi", "STKaiti", "楷体", serif;
-            font-size: 0.85rem;
-            letter-spacing: 0.3em;
-            color: rgba(47, 62, 47, 0.3);
+            font-family: "FangSong", "仿宋", "SimSun", "宋体", serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.25em;
+            color: var(--ink-faint);
             margin-top: 10px;
-            text-align: center;
         }
 
         .mode-toggle {
             display: flex;
             gap: 0;
-            margin-top: 14px;
-            justify-content: center;
+            margin-top: 16px;
         }
 
         .mode-btn {
             font-family: "KaiTi", "STKaiti", "楷体", serif;
-            font-size: 1.15rem;
-            letter-spacing: 0.15em;
-            padding: 4px 14px;
+            font-size: 1.1rem;
+            letter-spacing: 0.1em;
+            padding: 2px 12px;
             border: none;
             background: none;
-            color: rgba(47, 62, 47, 0.35);
+            color: #6b7b67;
             cursor: pointer;
             transition: color 0.3s;
             position: relative;
@@ -81,23 +93,23 @@
             content: '·';
             position: absolute;
             left: -2px;
-            color: rgba(47, 62, 47, 0.2);
+            color: rgba(107, 123, 103, 0.4);
         }
 
         .mode-btn.active {
-            color: #2f3e2f;
-            border-bottom: 1.5px solid rgba(47, 62, 47, 0.4);
+            color: #2f4f3f;
+            border-bottom: 1.5px solid rgba(47, 79, 63, 0.45);
             padding-bottom: 2px;
         }
 
         .mode-btn:hover:not(.active) {
-            color: rgba(47, 62, 47, 0.6);
+            color: #4a5f4a;
         }
 
         #map {
             width: 100%;
             height: 100vh;
-            filter: sepia(0.08) contrast(0.95);
+            filter: sepia(0.12) saturate(0.92) contrast(0.96);
         }
 
         .leaflet-container {
@@ -111,27 +123,26 @@
         .province-label {
             pointer-events: none;
             white-space: nowrap;
-            text-align: center;
         }
 
         .province-label-scroll {
             display: inline-block;
-            position: relative;
+            transform: translate(-50%, -50%);
             font-family: "STXingkai", "华文行楷", "STKaiti", "KaiTi", "楷体", serif;
             font-size: 17px;
-            color: rgba(47, 62, 47, 0.5);
+            color: rgba(63, 58, 50, 0.4);
             letter-spacing: 0.12em;
         }
 
         .city-tooltip {
             font-family: "KaiTi", "STKaiti", "楷体", "FangSong", "仿宋", serif;
-            font-size: 15px;
-            color: #3a3a3a;
+            font-size: 16px;
+            color: var(--ink-main);
             line-height: 1.6;
-            background: #f3ead8;
+            background: var(--paper-light);
             border: none;
             border-radius: 1px;
-            padding: 8px 14px;
+            padding: 6px 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
@@ -140,180 +151,197 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 1.2rem;
-            color: #3a2a1a;
+            font-size: 1.1rem;
+            color: var(--ink-soft);
             z-index: 1000;
-            background: rgba(229, 216, 190, 0.95);
-            padding: 20px 40px;
-            border-radius: 4px;
-            border: 1px solid rgba(80, 60, 40, 0.2);
+            background: var(--paper-light);
+            padding: 18px 36px;
+            border-radius: 3px;
+            border: none;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         }
 
         #poem-panel {
             position: fixed;
-            right: -460px;
+            right: -420px;
             top: 0;
-            width: 420px;
+            width: 390px;
             height: 100vh;
             max-height: 100vh;
-            background-color: rgba(229, 216, 190, 0.98);
-            background-image: url('4.png');
-            border-left: 1px solid rgba(80, 60, 40, 0.2);
-            box-shadow: -4px 0 20px rgba(58, 42, 26, 0.1);
+            background-color: var(--paper-mid);
+            border-left: none;
+            box-shadow: -2px 0 12px rgba(0, 0, 0, 0.04);
             z-index: 1000;
             overflow-y: auto;
             transition: right 0.4s ease-out;
             font-family: "KaiTi", "STKaiti", "楷体", serif;
         }
 
+        #poem-panel::-webkit-scrollbar { width: 4px; }
+        #poem-panel::-webkit-scrollbar-track { background: transparent; }
+        #poem-panel::-webkit-scrollbar-thumb { background: rgba(120, 100, 70, 0.2); border-radius: 2px; }
+
         #poem-panel.open {
             right: 0;
         }
 
         .panel-header {
-            padding: 24px 24px 14px;
-            border-bottom: 1px solid rgba(80, 60, 40, 0.15);
+            padding: 28px 20px 16px;
+            border-bottom: 1px solid rgba(120, 100, 70, 0.1);
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .panel-header h2 {
-            font-size: 1.3rem;
-            color: #3a2a1a;
-            letter-spacing: 4px;
+            font-family: "SimSun", "宋体", "KaiTi", "STKaiti", serif;
+            font-size: 1.7rem;
+            color: #2f2b24;
+            letter-spacing: 6px;
         }
 
         .panel-close {
-            width: 28px;
-            height: 28px;
             border: none;
             background: none;
-            font-size: 1.2rem;
-            color: rgba(58, 42, 26, 0.4);
+            font-size: 1.1rem;
+            color: var(--ink-faint);
             cursor: pointer;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 0 4px;
+            line-height: 1;
         }
 
         .panel-close:hover {
-            background: rgba(80, 60, 40, 0.08);
-            color: #3a2a1a;
+            color: var(--ink-main);
         }
 
         .panel-back {
             border: none;
             background: none;
-            font-size: 0.95rem;
-            color: rgba(58, 42, 26, 0.5);
+            font-size: 0.9rem;
+            color: var(--ink-soft);
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 2px 4px;
             font-family: "KaiTi", "STKaiti", "楷体", serif;
         }
 
         .panel-back:hover {
-            color: #3a2a1a;
+            color: var(--ink-main);
+        }
+
+        .poem-count {
+            font-size: 0.85rem;
+            color: var(--ink-faint);
+            padding: 0 20px 12px;
+            font-family: "FangSong", "仿宋", serif;
         }
 
         .poem-list {
-            padding: 8px 0;
+            padding: 4px 0 20px;
         }
 
-        .poem-list-item {
-            padding: 14px 18px;
-            margin: 0 14px;
+        .poem-card {
+            background: var(--paper-light);
+            margin: 0 16px 16px;
+            padding: 18px 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(120, 100, 70, 0.10);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
             cursor: pointer;
-            background: transparent;
-            border-bottom: 1px solid rgba(80, 60, 40, 0.08);
-            border-radius: 0;
-            transition: all 0.25s ease;
+            position: relative;
+            transition: box-shadow 0.25s ease;
         }
 
-        .poem-list-item:hover {
-            background: rgba(180, 58, 48, 0.04);
-            transform: none;
-            box-shadow: none;
+        .poem-card:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
 
-        .poem-list-item .poem-title {
-            font-size: 1.1rem;
-            color: #3a2a1a;
+        .poem-card .card-title {
+            font-family: "FangSong", "仿宋", "SimSun", "宋体", serif;
+            font-size: 1.2rem;
+            color: #2f2c24;
+            margin-bottom: 6px;
+            padding-right: 28px;
         }
 
-        .poem-list-item .poem-poet {
-            font-size: 0.9rem;
-            color: rgba(58, 42, 26, 0.5);
-            margin-top: 4px;
+        .poem-card .card-author {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            margin-bottom: 10px;
+        }
+
+        .poem-card .card-excerpt {
+            font-family: "FangSong", "仿宋", "KaiTi", "STKaiti", serif;
+            font-size: 0.92rem;
+            color: #4f4a3f;
+            line-height: 1.9;
+        }
+
+        .poem-card .card-seal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
         }
 
         .poem-detail {
-            padding: 28px 28px 40px;
+            padding: 28px 24px 40px;
             position: relative;
-            background-image: none;
         }
 
         .poem-detail .detail-title {
-            font-size: 1.5rem;
-            color: #3a2a1a;
+            font-family: "FangSong", "仿宋", "SimSun", "宋体", serif;
+            font-size: 1.45rem;
+            color: #2f2c24;
             text-align: center;
             letter-spacing: 4px;
             margin-bottom: 10px;
         }
 
         .poem-detail .detail-poet {
-            font-size: 1rem;
-            color: rgba(58, 42, 26, 0.55);
+            font-size: 0.95rem;
+            color: var(--ink-soft);
             text-align: center;
             margin-bottom: 24px;
         }
 
         .poem-detail .detail-preface {
-            font-size: 0.9rem;
-            color: rgba(58, 42, 26, 0.5);
+            font-size: 0.88rem;
+            color: var(--ink-soft);
             line-height: 1.9;
             text-align: center;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px dashed rgba(80, 60, 40, 0.15);
+            border-bottom: 1px dashed rgba(120, 100, 70, 0.15);
         }
 
         .poem-detail .detail-content {
-            font-size: 1.2rem;
-            color: #3a2a1a;
+            font-size: 1.15rem;
+            color: var(--ink-main);
             line-height: 2.4;
             text-align: center;
             white-space: pre-line;
-        }
-
-        .poem-count {
-            font-size: 0.85rem;
-            color: rgba(58, 42, 26, 0.5);
-            padding: 0 24px 4px;
         }
 
         #legend {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: rgba(229, 216, 190, 0.9);
-            background-image: url('4.png');
-            border: 1px solid rgba(80, 60, 40, 0.2);
+            background: var(--paper-light);
+            border: none;
             border-radius: 3px;
             padding: 10px 14px;
             z-index: 1000;
-            font-size: 0.75rem;
-            color: #3a2a1a;
-            box-shadow: 1px 1px 6px rgba(58, 42, 26, 0.06);
+            font-family: "FangSong", "仿宋", "SimSun", "宋体", serif;
+            font-size: 0.78rem;
+            color: #4c463b;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
         }
 
         #legend h4 {
             margin-bottom: 6px;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             letter-spacing: 3px;
-            color: #3a2a1a;
-            border-bottom: 1px solid rgba(80, 60, 40, 0.15);
+            color: #4c463b;
+            border-bottom: 1px solid rgba(120, 100, 70, 0.12);
             padding-bottom: 4px;
         }
 
@@ -327,7 +355,7 @@
         .legend-color {
             width: 20px;
             height: 12px;
-            border: 1px solid rgba(80, 60, 40, 0.25);
+            border: 1px solid rgba(120, 100, 70, 0.18);
             border-radius: 1px;
             flex-shrink: 0;
         }
@@ -358,7 +386,7 @@
                         <text x="15" y="22" text-anchor="middle" font-size="18" font-family="SimSun, 宋体, serif" font-weight="700" fill="black">诗</text>
                     </mask>
                 </defs>
-                <rect width="30" height="30" rx="2" fill="rgba(180, 58, 48, 0.65)" mask="url(#seal-mask)"/>
+                <rect width="30" height="30" rx="3" fill="rgba(177, 74, 58, 0.75)" mask="url(#seal-mask)"/>
             </svg>
         </h1>
         <div class="header-subtitle">唐宋诗词地理分布</div>
@@ -387,12 +415,12 @@
     <div id="legend">
         <h4 id="legend-title">诗词数量</h4>
         <div class="legend-row"><span class="legend-color" style="background:transparent;border-style:dashed;"></span> 0</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(202,214,195,0.5)"></span> 1-2</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(162,191,162,0.5)"></span> 3-5</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(111,168,142,0.5)"></span> 6-10</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(69,142,120,0.5)"></span> 11-20</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(42,114,102,0.5)"></span> 21-50</div>
-        <div class="legend-row"><span class="legend-color" style="background:rgba(24,90,82,0.5)"></span> 50+</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(197,214,196,0.55)"></span> 1-2</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(165,191,166,0.55)"></span> 3-5</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(142,172,145,0.55)"></span> 6-10</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(100,133,110,0.55)"></span> 11-20</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(70,101,83,0.55)"></span> 21-50</div>
+        <div class="legend-row"><span class="legend-color" style="background:rgba(53,80,64,0.55)"></span> 50+</div>
     </div>
 
     <div id="poem-panel">
@@ -425,25 +453,25 @@
         map.getPane('borderPane').style.zIndex = 470;
 
         function poemColor(count) {
-            if (!count) return '#ddd4b8';
-            if (count <= 2) return '#cad6c3';
-            if (count <= 5) return '#a2bfa2';
-            if (count <= 10) return '#6fa88e';
-            if (count <= 20) return '#458e78';
-            if (count <= 50) return '#2a7266';
-            return '#185a52';
+            if (!count) return '#ddd2bb';
+            if (count <= 2) return '#c5d6c4';
+            if (count <= 5) return '#a5bfa6';
+            if (count <= 10) return '#8eac91';
+            if (count <= 20) return '#64856e';
+            if (count <= 50) return '#466553';
+            return '#355040';
         }
 
         var cityStyle = {
-            color: 'rgba(80, 60, 40, 0.08)',
-            weight: 0.3,
+            color: 'rgba(88, 78, 56, 0.22)',
+            weight: 0.5,
             fillColor: 'transparent',
             fillOpacity: 0,
             pane: 'cityPane'
         };
 
         var wholeRegionStyle = {
-            color: 'rgba(80, 60, 40, 0.15)',
+            color: 'rgba(88, 78, 56, 0.12)',
             weight: 0,
             fillColor: 'transparent',
             fillOpacity: 0,
@@ -451,19 +479,19 @@
         };
 
         var provinceStyle = {
-            color: 'rgba(80, 60, 40, 0.15)',
-            weight: 0.8,
+            color: 'rgba(88, 78, 56, 0.36)',
+            weight: 1.0,
             fill: false,
             pane: 'provincePane'
         };
 
         var highlightStyle = {
-            fillColor: 'rgba(180, 58, 48, 0.08)',
+            fillColor: 'rgba(100, 133, 110, 0.18)',
             fillOpacity: 1
         };
 
         var activeStyle = {
-            fillColor: 'rgba(180, 58, 48, 0.12)',
+            fillColor: 'rgba(100, 133, 110, 0.28)',
             fillOpacity: 1
         };
 
@@ -499,10 +527,10 @@
                 var name = item.name;
                 var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                 var s = {
-                    color: 'rgba(80, 60, 40, 0.08)',
-                    weight: 0.3,
+                    color: 'rgba(88, 78, 56, 0.22)',
+                    weight: 0.5,
                     fillColor: count > 0 ? poemColor(count) : 'transparent',
-                    fillOpacity: count > 0 ? 0.5 : 0,
+                    fillOpacity: count > 0 ? 0.55 : 0,
                     pane: 'cityPane'
                 };
                 item.layer.setStyle(s);
@@ -520,6 +548,11 @@
             }
         }
 
+        function getExcerpt(content, lines) {
+            var arr = content.split('\n');
+            return arr.slice(0, lines || 2).join('\n');
+        }
+
         function showPoemList(cityName, poems) {
             var panel = document.getElementById('poem-panel');
             var title = document.getElementById('panel-title');
@@ -529,18 +562,19 @@
             title.textContent = cityName;
             backBtn.innerHTML = '';
 
-            var html = '<div class="poem-count">共 ' + poems.length + ' 首</div><div class="poem-list">';
+            var html = '<div class="poem-count">共收录 ' + poems.length + ' 首</div><div class="poem-list">';
             poems.forEach(function(poem, i) {
-                var sealHtml = '';
-                if (poem.dynasty) {
-                    var maskId = poem.dynasty === '唐' ? 'seal-tang-mask' : 'seal-song-mask';
-                    sealHtml = '<svg class="dynasty-seal" viewBox="0 0 18 18" width="18" height="18">'
-                        + '<rect width="18" height="18" rx="1" fill="rgba(180, 58, 48, 0.68)" mask="url(#' + maskId + ')"/>'
-                        + '</svg>';
-                }
-                html += '<div class="poem-list-item" onclick="showPoemDetail(\'' + cityName + '\',' + i + ')">'
-                    + '<div class="poem-title">' + poem.title + '</div>'
-                    + '<div class="poem-poet">' + sealHtml + poem.poet + '</div>'
+                var sealMaskId = poem.dynasty === '唐' ? 'seal-tang-mask' : 'seal-song-mask';
+                var sealSvg = '<svg class="card-seal" viewBox="0 0 18 18" width="20" height="20">'
+                    + '<rect width="18" height="18" rx="1" fill="rgba(177, 74, 58, 0.65)" mask="url(#' + sealMaskId + ')"/>'
+                    + '</svg>';
+                var excerpt = getExcerpt(poem.content, 2);
+                var safeCityName = cityName.replace(/'/g, "\\'");
+                html += '<div class="poem-card" onclick="showPoemDetail(\'' + safeCityName + '\',' + i + ')">'
+                    + sealSvg
+                    + '<div class="card-title">' + poem.title + '</div>'
+                    + '<div class="card-author">' + (poem.dynasty ? poem.dynasty + '·' : '') + poem.poet + '</div>'
+                    + '<div class="card-excerpt">' + excerpt + '</div>'
                     + '</div>';
             });
             html += '</div>';
@@ -555,22 +589,17 @@
             var body = document.getElementById('panel-body');
             var backBtn = document.getElementById('panel-back-btn');
 
+            var safeCityName = cityName.replace(/'/g, "\\'");
             title.textContent = '';
-            backBtn.innerHTML = '<button class="panel-back" onclick="showPoemList(\'' + cityName + '\', poemsByCity[\'' + cityName + '\'])">← 返回列表</button>';
+            backBtn.innerHTML = '<button class="panel-back" onclick="showPoemList(\'' + safeCityName + '\', poemsByCity[\'' + safeCityName + '\'])">← 返回列表</button>';
 
-            var sealHtml = '';
-            if (poem.dynasty) {
-                var maskId = poem.dynasty === '唐' ? 'seal-tang-mask' : 'seal-song-mask';
-                sealHtml = '<svg class="dynasty-seal" viewBox="0 0 18 18" width="18" height="18">'
-                    + '<rect width="18" height="18" rx="1" fill="rgba(180, 58, 48, 0.68)" mask="url(#' + maskId + ')"/>'
-                    + '</svg>';
-            }
+            var dynastyText = poem.dynasty ? poem.dynasty + '·' : '';
             var prefaceHtml = poem.preface
                 ? '<div class="detail-preface">' + poem.preface + '</div>'
                 : '';
             body.innerHTML = '<div class="poem-detail">'
                 + '<div class="detail-title">' + poem.title + '</div>'
-                + '<div class="detail-poet">' + sealHtml + poem.poet + '</div>'
+                + '<div class="detail-poet">' + dynastyText + poem.poet + '</div>'
                 + prefaceHtml
                 + '<div class="detail-content">' + poem.content + '</div>'
                 + '</div>';
@@ -582,20 +611,39 @@
         ];
 
         var labelOverrides = {
-            130000: [38.5, 116.0],
-            140000: [37.0, 112.3],
-            150000: [43.0, 114.0],
+            110000: [39.95, 116.4],
+            120000: [39.2, 117.2],
+            130000: [38.5, 115.5],
+            140000: [37.5, 112.3],
+            150000: [43.0, 113.0],
+            210000: [41.5, 123.0],
+            220000: [43.5, 126.0],
             230000: [47.5, 128.0],
+            310000: [31.2, 121.5],
+            320000: [33.0, 119.5],
+            330000: [29.0, 120.0],
+            340000: [31.8, 117.2],
+            350000: [26.0, 117.8],
+            360000: [27.6, 115.8],
             370000: [36.2, 118.5],
-            420000: [31.2, 112.2],
+            410000: [34.0, 113.5],
+            420000: [31.0, 112.2],
             430000: [27.5, 111.5],
-            460000: [19.2, 109.7],
-            500000: [30.3, 107.3],
-            610000: [36.0, 109.0],
-            620000: [38.5, 101.5],
+            440000: [23.5, 113.3],
+            450000: [23.7, 108.5],
+            460000: [19.15, 109.75],
+            500000: [30.0, 107.3],
+            510000: [30.5, 103.5],
+            520000: [26.8, 106.8],
+            530000: [25.0, 101.5],
+            540000: [31.5, 87.0],
+            610000: [35.5, 109.0],
+            620000: [38.0, 102.5],
+            630000: [35.5, 96.5],
             640000: [37.3, 106.2],
-            710000: [23.7, 121.0],
-            810000: [22.35, 114.15],
+            650000: [41.5, 85.5],
+            710000: [23.6, 120.85],
+            810000: [22.35, 114.18],
             820000: [22.15, 113.55]
         };
 
@@ -669,10 +717,10 @@
                         var name = feature.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         return {
-                            color: 'rgba(80, 60, 40, 0.08)',
-                            weight: 0.3,
+                            color: 'rgba(88, 78, 56, 0.22)',
+                            weight: 0.5,
                             fillColor: count > 0 ? poemColor(count) : 'transparent',
-                            fillOpacity: count > 0 ? 0.5 : 0,
+                            fillOpacity: count > 0 ? 0.55 : 0,
                             pane: 'cityPane'
                         };
                     },
@@ -680,10 +728,10 @@
                         var name = f.properties.name;
                         var count = poemsByCity[name] ? poemsByCity[name].length : 0;
                         var s = {
-                            color: 'rgba(80, 60, 40, 0.08)',
-                            weight: 0.3,
+                            color: 'rgba(88, 78, 56, 0.22)',
+                            weight: 0.5,
                             fillColor: count > 0 ? poemColor(count) : 'transparent',
-                            fillOpacity: count > 0 ? 0.5 : 0,
+                            fillOpacity: count > 0 ? 0.55 : 0,
                             pane: 'cityPane'
                         };
                         var item = { name: name, layer: layer, style: s };
@@ -700,8 +748,8 @@
                 .then(function(borderData) {
                     L.geoJSON(borderData, {
                         style: {
-                            color: 'rgba(60, 45, 30, 0.3)',
-                            weight: 1.8,
+                            color: 'rgba(80, 70, 50, 0.40)',
+                            weight: 1.6,
                             fill: false,
                             pane: 'borderPane'
                         }
