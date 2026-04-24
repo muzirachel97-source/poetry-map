@@ -656,6 +656,109 @@
             top: -1px;
         }
 
+        @media (max-width: 768px) {
+            #header {
+                top: 8px;
+                left: 10px;
+                transform: scale(1.0);
+            }
+            #header h1 {
+                font-size: 1.6rem;
+                letter-spacing: 0.04em;
+            }
+            .header-seal {
+                width: 20px;
+                height: 20px;
+                font-size: 15px;
+                right: -26px;
+                padding-left: 2.5px;
+            }
+            .header-subtitle {
+                font-size: 0.6rem;
+                margin-left: 12px;
+            }
+            .mode-toggle {
+                margin-left: 6px;
+            }
+            .mode-btn {
+                font-size: 0.6rem;
+                padding: 2px 6px;
+            }
+            #poem-panel {
+                width: 100vw;
+                right: -100vw;
+            }
+            .panel-header {
+                padding: 16px 14px 10px;
+            }
+            .panel-header h2 {
+                font-size: 1.4rem;
+                letter-spacing: 3px;
+            }
+            .panel-close {
+                font-size: 1.1rem;
+            }
+            .poem-count {
+                font-size: 0.8rem;
+                padding: 0 14px 8px;
+            }
+            .poem-card {
+                margin: 0 10px 14px;
+                padding: 16px 16px;
+            }
+            .poem-card .card-title {
+                font-size: 1.1rem;
+            }
+            .poem-card .card-author {
+                font-size: 0.8rem;
+            }
+            .poem-card .card-preview {
+                font-size: 0.85rem;
+            }
+            .poem-detail .detail-title {
+                font-size: 1.5rem;
+            }
+            .poem-detail .detail-poet {
+                font-size: 0.9rem;
+            }
+            .poem-detail .detail-content {
+                font-size: 1.2rem;
+            }
+            .poem-detail .detail-preface {
+                font-size: 0.85rem;
+            }
+            #detail-landscape {
+                width: 100vw;
+                height: 140px;
+            }
+            #legend {
+                transform: scale(1.0);
+                bottom: 10px;
+                left: 10px;
+                padding: 10px 12px;
+            }
+            #stats {
+                font-size: 0.7rem;
+                padding: 8px 12px;
+                bottom: 10px;
+                right: 10px;
+                letter-spacing: 1px;
+                line-height: 1.8;
+            }
+            #bgm-btn {
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+                font-size: 12px;
+            }
+            .province-label-scroll {
+                font-size: 12px !important;
+            }
+            .bird-flock {
+                display: none;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -793,11 +896,11 @@
 
         var map = L.map('map', {
             zoomControl: false,
-            minZoom: 4,
+            minZoom: window.innerWidth <= 768 ? 2 : 4,
             maxZoom: 8,
             zoomSnap: 0.25,
             zoomDelta: 0.25
-        }).setView([37.0, 105], window.innerWidth > 1600 ? 5.25 : 4.5);
+        }).setView([37.0, 105], window.innerWidth <= 768 ? 2.75 : (window.innerWidth > 1600 ? 5.25 : 4.5));
 
         map.createPane('cityPane');
         map.getPane('cityPane').style.zIndex = 400;
