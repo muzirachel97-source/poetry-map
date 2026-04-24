@@ -40,30 +40,30 @@
 
         #header {
             position: fixed;
-            top: 12vh;
-            left: 6vw;
+            top: 4vh;
+            left: 3vw;
             z-index: 500;
             pointer-events: auto;
-            transform: scale(1.44);
+            transform: scale(1.7);
             transform-origin: top left;
         }
 
         #header h1 {
-            font-family: "Ma Shan Zheng", "Zhi Mang Xing", "方正字迹-曾正国行书", "FZZhiJi-ZengZhengGuoXingShuS", "方正清刻本悦宋", "FZQingKeBenYueSongS-R-GB", "STKaiti", "KaiTi", "STXingkai", "华文行楷", cursive, serif;
-            font-size: 2.8rem;
-            letter-spacing: 0.1em;
-            font-weight: 400;
-            color: #2d4a3b;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
             position: relative;
             display: inline-block;
+            line-height: 1;
+        }
+        #title-canvas {
+            display: block;
+            height: 80px;
+            width: 380px;
         }
 
         .header-seal {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            right: -42px;
+            right: -2px;
             display: inline-block;
             width: 28px;
             height: 28px;
@@ -97,6 +97,7 @@
             color: #6b6450;
             margin-top: 10px;
             text-align: left;
+            margin-left: 22px;
         }
 
         .mode-toggle {
@@ -104,7 +105,7 @@
             gap: 0;
             margin-top: 16px;
             justify-content: flex-start;
-            margin-left: -12px;
+            margin-left: 10px;
         }
 
         .mode-btn {
@@ -504,7 +505,7 @@
 </head>
 <body>
     <div id="header">
-        <h1>诗词地图
+        <h1><canvas id="title-canvas" width="380" height="80"></canvas>
             <span class="header-seal" id="header-seal">诗</span>
         </h1>
         <div class="header-subtitle">唐宋诗词地理分布</div>
@@ -574,6 +575,55 @@
                 ctx.fillRect(fx, fy, fw, fh);
             }
             document.documentElement.style.setProperty('--paper-grain', 'url(' + c.toDataURL() + ')');
+        })();
+
+        (function() {
+            var tc = document.getElementById('title-canvas');
+            if (!tc) return;
+            var ctx = tc.getContext('2d');
+            var text = '诗词地图';
+            var charW = 82;
+            var baseSize = 62;
+            var seed = 48271;
+            function rng() { seed = (seed * 16807 + 0) % 2147483647; return (seed - 1) / 2147483646; }
+
+            ctx.textBaseline = 'middle';
+
+            for (var ci = 0; ci < text.length; ci++) {
+                var cx = ci * charW + charW / 2 + (rng() - 0.5) * 3;
+                var cy = 40 + (rng() - 0.5) * 4;
+                var sz = baseSize + (rng() - 0.5) * 6;
+                var rot = (rng() - 0.5) * 0.06;
+
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(rot);
+
+                var inkV = Math.floor(rng() * 15 + 30);
+                ctx.font = '400 ' + sz + 'px "Ma Shan Zheng", "Zhi Mang Xing", "STXingkai", "华文行楷", cursive';
+                ctx.fillStyle = 'rgba(' + inkV + ',' + (inkV + 10) + ',' + (inkV - 5) + ',0.88)';
+                ctx.fillText(text[ci], -sz / 2 + 4, 0);
+
+                ctx.globalAlpha = 0.06;
+                ctx.fillStyle = 'rgba(' + inkV + ',' + (inkV + 10) + ',' + (inkV - 5) + ',1)';
+                ctx.filter = 'blur(3px)';
+                ctx.fillText(text[ci], -sz / 2 + 4, 1);
+                ctx.filter = 'none';
+                ctx.globalAlpha = 1.0;
+
+                for (var s = 0; s < 5; s++) {
+                    var sx = -sz / 2 + 4 + (rng() - 0.5) * sz * 0.7;
+                    var sy = (rng() - 0.5) * sz * 0.5;
+                    var sr = rng() * 1.5 + 0.3;
+                    ctx.globalAlpha = rng() * 0.08 + 0.02;
+                    ctx.fillStyle = 'rgba(40,50,35,1)';
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1.0;
+                ctx.restore();
+            }
         })();
 
         (function() {
