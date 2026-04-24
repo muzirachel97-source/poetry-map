@@ -688,7 +688,10 @@
             }
         }
         drawTitle();
-        document.fonts.ready.then(function() { drawTitle(); });
+        document.fonts.load('400 62px "Ma Shan Zheng"').then(function(fonts) {
+            if (fonts.length > 0) drawTitle();
+        });
+        setTimeout(function() { drawTitle(); }, 3000);
 
         (function() {
             var seal = document.getElementById('header-seal');
