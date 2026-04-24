@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>诗词地图</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&family=Ma+Shan+Zheng&family=Liu+Jian+Mao+Cao&display=swap" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -44,7 +46,7 @@
             left: 3vw;
             z-index: 500;
             pointer-events: auto;
-            transform: scale(1.7);
+            transform: scale(1.9);
             transform-origin: top left;
         }
 
@@ -204,9 +206,9 @@
 
         #poem-panel {
             position: fixed;
-            right: -580px;
+            right: -640px;
             top: 0;
-            width: 540px;
+            width: 600px;
             height: 100vh;
             max-height: 100vh;
             background:
@@ -246,7 +248,7 @@
             position: fixed;
             bottom: 0;
             right: 0;
-            width: 540px;
+            width: 600px;
             height: 240px;
             background: url('%E5%85%A82.png') center 65% / cover no-repeat;
             opacity: 0;
@@ -453,7 +455,7 @@
             font-size: 0.75rem;
             color: #4a4a4a;
             box-shadow: 0 1px 6px rgba(60, 50, 30, 0.06);
-            transform: scale(1.44);
+            transform: scale(1.6);
             transform-origin: bottom left;
         }
 
@@ -510,7 +512,7 @@
             right: 20px;
             z-index: 500;
             font-family: "FangSong", "仿宋", "KaiTi", "STKaiti", "楷体", serif;
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             color: #5a5347;
             letter-spacing: 2px;
             line-height: 2;
@@ -541,6 +543,69 @@
         #stats .stat-num {
             font-family: "Palatino Linotype", "Book Antiqua", "Georgia", serif;
             font-style: italic;
+            color: #3e6a4f;
+        }
+
+        .flying-bird {
+            position: fixed;
+            pointer-events: none;
+            z-index: 450;
+            opacity: 0;
+        }
+        .bird-1 { top: 18vh; animation: flyBird1 20s linear infinite; animation-delay: 0s; }
+        .bird-2 { top: 35vh; animation: flyBird2 28s linear infinite; animation-delay: 7s; }
+        .bird-3 { top: 12vh; animation: flyBird3 24s linear infinite; animation-delay: 13s; }
+        .bird-4 { top: 48vh; animation: flyBird4 32s linear infinite; animation-delay: 4s; }
+
+        @keyframes flyBird1 {
+            0% { left: -6%; opacity: 0; transform: scaleX(1) translateY(0); }
+            4% { opacity: 0.4; }
+            50% { transform: scaleX(1) translateY(-15px); }
+            92% { opacity: 0.4; }
+            100% { left: 108%; opacity: 0; transform: scaleX(1) translateY(5px); }
+        }
+        @keyframes flyBird2 {
+            0% { left: 108%; opacity: 0; transform: scaleX(-1) translateY(0); }
+            4% { opacity: 0.35; }
+            50% { transform: scaleX(-1) translateY(-20px); }
+            92% { opacity: 0.35; }
+            100% { left: -8%; opacity: 0; transform: scaleX(-1) translateY(8px); }
+        }
+        @keyframes flyBird3 {
+            0% { left: -8%; opacity: 0; transform: scaleX(1) translateY(0); }
+            5% { opacity: 0.3; }
+            50% { transform: scaleX(1) translateY(-12px); }
+            90% { opacity: 0.3; }
+            100% { left: 106%; opacity: 0; transform: scaleX(1) translateY(3px); }
+        }
+        @keyframes flyBird4 {
+            0% { left: 106%; opacity: 0; transform: scaleX(-1) translateY(0); }
+            3% { opacity: 0.25; }
+            50% { transform: scaleX(-1) translateY(-18px); }
+            93% { opacity: 0.25; }
+            100% { left: -6%; opacity: 0; transform: scaleX(-1) translateY(6px); }
+        }
+
+        #bgm-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 500;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            font-family: "FangSong", "仿宋", "KaiTi", "楷体", serif;
+            font-size: 1rem;
+            color: #5a5347;
+            background: var(--paper-grain), linear-gradient(180deg, #e0d0a8, #d8c89e);
+            border: none;
+            border-radius: 1px;
+            box-shadow: 0 1px 6px rgba(60, 50, 30, 0.06);
+            cursor: pointer;
+            letter-spacing: 0;
+        }
+        #bgm-btn.playing {
             color: #3e6a4f;
         }
 
@@ -587,6 +652,24 @@
         </defs>
     </svg>
     <div id="decor-overlay"></div>
+
+    <!-- 水墨飞鸟 -->
+    <svg class="flying-bird bird-1" width="40" height="16" viewBox="0 0 40 16">
+        <path d="M0 8 Q8 2, 18 6 Q20 7, 22 6 Q32 2, 40 8" stroke="rgba(45,40,32,0.55)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </svg>
+    <svg class="flying-bird bird-2" width="50" height="20" viewBox="0 0 50 20">
+        <path d="M0 10 Q10 2, 23 8 Q25 9, 27 8 Q40 2, 50 10" stroke="rgba(45,40,32,0.45)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </svg>
+    <svg class="flying-bird bird-3" width="30" height="12" viewBox="0 0 30 12">
+        <path d="M0 6 Q6 1, 13 5 Q15 6, 17 5 Q24 1, 30 6" stroke="rgba(45,40,32,0.4)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <svg class="flying-bird bird-4" width="35" height="14" viewBox="0 0 35 14">
+        <path d="M0 7 Q7 1, 16 6 Q17.5 7, 19 6 Q28 1, 35 7" stroke="rgba(45,40,32,0.35)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <!-- BGM -->
+    <audio id="bgm" loop preload="auto"><source src="bgm.mp3" type="audio/mpeg"></audio>
+    <button id="bgm-btn" onclick="toggleBgm()" title="背景音乐">♪</button>
     <div id="loading">地图加载中...</div>
 
     <div id="legend">
@@ -691,7 +774,9 @@
         document.fonts.load('400 62px "Ma Shan Zheng"').then(function(fonts) {
             if (fonts.length > 0) drawTitle();
         });
-        setTimeout(function() { drawTitle(); }, 3000);
+        setTimeout(function() { drawTitle(); }, 2000);
+        setTimeout(function() { drawTitle(); }, 5000);
+        window.addEventListener('load', function() { setTimeout(drawTitle, 500); });
 
         (function() {
             var seal = document.getElementById('header-seal');
@@ -726,7 +811,7 @@
             maxZoom: 8,
             zoomSnap: 0.25,
             zoomDelta: 0.25
-        }).setView([37.0, 105], window.innerWidth > 1600 ? 5 : 4.75);
+        }).setView([37.0, 105], window.innerWidth > 1600 ? 5.25 : 4.5);
 
         map.createPane('cityPane');
         map.getPane('cityPane').style.zIndex = 400;
@@ -873,6 +958,21 @@
             });
 
             closePanel();
+        }
+
+        function toggleBgm() {
+            var audio = document.getElementById('bgm');
+            var btn = document.getElementById('bgm-btn');
+            if (audio.paused) {
+                audio.volume = 0.3;
+                audio.play();
+                btn.classList.add('playing');
+                btn.textContent = '♫';
+            } else {
+                audio.pause();
+                btn.classList.remove('playing');
+                btn.textContent = '♪';
+            }
         }
 
         function closePanel() {
