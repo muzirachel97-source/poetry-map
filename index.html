@@ -242,6 +242,24 @@
             right: 0;
         }
 
+        #detail-landscape {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 540px;
+            height: 240px;
+            background: url('%E5%85%A82.png') center 65% / cover no-repeat;
+            opacity: 0;
+            mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,1) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,1) 100%);
+            pointer-events: none;
+            z-index: 1001;
+            transition: opacity 0.4s;
+        }
+        #detail-landscape.visible {
+            opacity: 0.4;
+        }
+
         .panel-header {
             padding: 28px 20px 16px;
             border-bottom: 1px solid rgba(120, 100, 70, 0.06);
@@ -550,6 +568,7 @@
         </div>
         <div id="panel-body"></div>
     </div>
+    <div id="detail-landscape"></div>
 
     <script src="poems_data.js"></script>
     <script>
@@ -763,6 +782,7 @@
 
         function closePanel() {
             document.getElementById('poem-panel').classList.remove('open');
+            document.getElementById('detail-landscape').classList.remove('visible');
             if (activeLayer) {
                 activeLayer.setStyle(activeLayerStyle);
                 activeLayer = null;
@@ -775,6 +795,7 @@
         }
 
         function showPoemList(cityName, poems) {
+            document.getElementById('detail-landscape').classList.remove('visible');
             var panel = document.getElementById('poem-panel');
             var title = document.getElementById('panel-title');
             var body = document.getElementById('panel-body');
@@ -824,6 +845,7 @@
                 + prefaceHtml
                 + '<div class="detail-content">' + poem.content + '</div>'
                 + '</div>';
+            document.getElementById('detail-landscape').classList.add('visible');
         }
 
         var noExpand = [
