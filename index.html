@@ -726,7 +726,7 @@
             maxZoom: 8,
             zoomSnap: 0.25,
             zoomDelta: 0.25
-        }).setView([37.0, 105], 4.75);
+        }).setView([37.0, 105], window.innerWidth > 1600 ? 5 : 4.75);
 
         map.createPane('cityPane');
         map.getPane('cityPane').style.zIndex = 400;
@@ -791,7 +791,7 @@
             document.getElementById('stats').innerHTML =
                 '唐诗 <span class="stat-num">' + tangCount + '</span> 首 · '
                 + '宋词 <span class="stat-num">' + songCount + '</span> 首<br>'
-                + '涉及 <span class="stat-num">' + cityCount + '</span> 个地方';
+                + '走过 <span class="stat-num">' + cityCount + '</span> 个地方';
         })();
 
         var poemsByCity = allByCity;
